@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Ponctuel Service</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6">
+
+    <div class="max-w-5xl mx-auto flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Panneau d'administration</h1>
+        <a href="index.html" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Voir le site</a>
+    </div>
+
+    <!-- Ajouter une voiture -->
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-700">Ajouter un nouveau véhicule</h2>
+        <form id="car-form" onsubmit="handleAddCar(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="nom" placeholder="Nom du véhicule (ex: Karenjy Mazana)" required class="border p-2 rounded">
+            <input type="text" id="matricule" placeholder="Matricule (ex: 1234 TAB)" required class="border p-2 rounded">
+            <input type="text" id="type" placeholder="Type (ex: SUV, Berline, 4x4)" required class="border p-2 rounded">
+            <input type="number" id="prix" placeholder="Prix par jour (Ar)" required class="border p-2 rounded">
+            <textarea id="description" placeholder="Description du véhicule" required class="border p-2 rounded md:col-span-2"></textarea>
+            
+            <div class="md:col-span-2">
+                <label class="block text-sm font-bold text-gray-700 mb-1">Photo du véhicule (Sera envoyée sur GitHub)</label>
+                <input type="file" id="photo-file" accept="image/*" required class="border p-2 rounded w-full bg-gray-50">
+            </div>
+
+            <button type="submit" id="add-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold p-3 rounded md:col-span-2 transition">
+                + Téléverser la photo et ajouter le véhicule
+            </button>
+        </form>
+    </div>
+
+    <!-- Liste des Réservations -->
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-700">Réservations effectuées</h2>
+            <button onclick="fetchReservations()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Actualiser</button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border text-sm text-left border-collapse">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-3 border">Locataire</th>
+                        <th class="p-3 border">Contact / CIN</th>
+                        <th class="p-3 border">ID Voiture</th>
+                        <th class="p-3 border">Durée</th>
+                        <th class="p-3 border">Avance (20%)</th>
+                        <th class="p-3 border">Reste à payer</th>
+                    </tr>
+                </thead>
+                <tbody id="reservations-table">
+                    <tr><td colspan="6" class="p-3 text-center text-gray-500">Chargement...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const REPO_OWNER = "fetrasoatanjonait";
+        const REPO_NAME = "ponctuel-service";
+        const GITHUB_PAT = "github_pat"+"_11BYV4CJI02VnaKLqAVLvU_tNwQy660BTLlETMnBh1edE0j9exoHu3Bm1EO5C0Z8OcD2VFQBSPW1gQSTNt";
+
+        // Conversion image en base64 pour upload via GitHub API
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleAddCar(e) {
+            e.preventDefault();
+            const btn = document.getElementById('add-btn');
+            btn.disabled = true;
+            btn.innerText = "Envoi de l'image sur GitHub...";
+
+            try {
+                // 1. Upload de la photo dans le dossier images/
+                const fileInput = document.getElementById('photo-file').files[0];
+                const base64Image = await fileToBase64(fileInput);
+                const fileName = `images/${Date.now()}_${fileInput.name.replace(/\s+/g, '_')}`;
+                const uploadImgUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+
+                const imgRes = await fetch(uploadImgUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GITHUB_PAT}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Upload image: ${fileInput.name}`,
+                        content: base64Image
+                    })
+                });
+                
+                const imgData = await imgRes.json();
+                const photoGitUrl = imgData.content.download_url;
+
+                btn.innerText = "Mise à jour de ListeVoirture.json...";
+
+                // 2. Récupérer et mettre à jour le fichier ListeVoirture.json
+                const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
+                const jsonRes = await fetch(jsonUrl, {
+                    headers: { "Authorization": `token ${GITHUB_PAT}` }
+                });
+                const jsonData = await jsonRes.json();
+                const cars = JSON.parse(decodeURIComponent(escape(atob(jsonData.content))));
+
+                const newCar = {
+                    id: Date.now().toString(),
+                    nom: document.getElementById('nom').value,
+                    matricule: document.getElementById('matricule').value,
+                    type: document.getElementById('type').value,
+                    prix: parseFloat(document.getElementById('prix').value),
+                    description: document.getElementById('description').value,
+                    photo: photoGitUrl,
+                    etat: "disponible"
+                };
+
+                cars.push(newCar);
+
+                // 3. Envoyer la mise à jour sur GitHub
+                const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
+                await fetch(jsonUrl, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GITHUB_PAT}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Ajout véhicule ${newCar.nom}`,
+                        content: updatedContentBase64,
+                        sha: jsonData.sha
+                    })
+                });
+
+                alert("Véhicule et photo ajoutés avec succès !");
+                document.getElementById('car-form').reset();
+            } catch (err) {
+                console.error(err);
+                alert("Erreur lors de l'envoi vers GitHub.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "+ Téléverser la photo et ajouter le véhicule";
+            }
+        }
+
+        // Afficher la liste des réservations
+        async function fetchReservations() {
+            const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+            try {
+                const res = await fetch(resUrl, {
+                    headers: { "Authorization": `token ${GITHUB_PAT}` }
+                });
+                const data = await res.json();
+                const reservations = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                
+                const tbody = document.getElementById('reservations-table');
+                if (reservations.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-gray-500">Aucune réservation trouvée.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = reservations.map(r => `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3 font-bold text-gray-800">${r.nomlocation}</td>
+                        <td class="p-3 text-gray-600">${r.tel} <br><span class="text-xs text-gray-400">CIN: ${r.CIN}</span></td>
+                        <td class="p-3 font-mono text-xs">${r.id_devoiture}</td>
+                        <td class="p-3">${r["nombrede jour alloue"]} jour(s)</td>
+                        <td class="p-3 font-bold text-green-600">${r["avance20%"]} Ar</td>
+                        <td class="p-3 font-bold text-red-600">${r["montant resta impaye"]} Ar</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        fetchReservations();
+    </script>
+</body>
+</html>

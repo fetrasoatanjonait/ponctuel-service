@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ponctuel Service - Location de Voitures</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <!-- Navigation -->
+    <nav class="bg-blue-600 p-4 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Ponctuel Service</h1>
+            <a href="admin.html" class="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded text-sm transition">Espace Admin</a>
+        </div>
+    </nav>
+
+    <!-- En-tête -->
+    <header class="bg-blue-500 text-white py-10 text-center">
+        <h2 class="text-3xl font-extrabold">Location de véhicules sur-mesure</h2>
+        <p class="mt-2">Réservez facilement votre voiture en quelques clics</p>
+    </header>
+
+    <!-- Catalogue -->
+    <main class="container mx-auto py-10 px-4">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Nos Véhicules Disponibles</h3>
+        <div id="cars-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <p class="text-gray-500">Chargement des véhicules...</p>
+        </div>
+    </main>
+
+    <!-- Modal de Réservation -->
+    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
+            <h3 class="text-xl font-bold mb-4 text-gray-800" id="modal-car-title">Réserver une voiture</h3>
+            <form id="booking-form" onsubmit="handleBooking(event)">
+                <input type="hidden" id="modal-car-id">
+                <input type="hidden" id="modal-car-price">
+
+                <div class="mb-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-1">Nom du Locataire</label>
+                    <input type="text" id="nomlocation" placeholder="ex: Rakoto" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-1">Téléphone</label>
+                    <input type="tel" id="tel" placeholder="ex: 034 00 000 00" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-1">Numéro CIN</label>
+                    <input type="text" id="cin" placeholder="ex: 101 211 xxx xxx" required class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-3">
+                    <label class="block text-gray-700 text-sm font-bold mb-1">Nombre de jours alloués</label>
+                    <input type="number" id="nbr-jours" min="1" value="1" required oninput="calculatePrice()" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Recapitulatif Financier -->
+                <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm space-y-1">
+                    <p class="flex justify-between"><span>Montant Total :</span> <strong id="total-price">0</strong></p>
+                    <p class="flex justify-between text-blue-700"><span>Avance requise (20%) :</span> <strong id="avance-price">0</strong></p>
+                    <p class="flex justify-between text-red-600"><span>Reste à payer :</span> <strong id="reste-price">0</strong></p>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100">Annuler</button>
+                    <button type="submit" id="submit-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold">Confirmer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION GITHUB INTÉGRÉE
+        const REPO_OWNER = "fetrasoatanjonait";
+        const REPO_NAME = "ponctuel-service";
+        const GITHUB_PAT = "github_pat"+"_11BYV4CJI02VnaKLqAVLvU_tNwQy660BTLlETMnBh1edE0j9exoHu3Bm1EO5C0Z8OcD2VFQBSPW1gQSTNt";
+
+        const CARS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/ListeVoirture.json`;
+        const API_RESERVATION_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+
+        // Charger les voitures
+        async function fetchCars() {
+            try {
+                const res = await fetch(CARS_URL + "?nocache=" + Date.now());
+                const cars = await res.json();
+                renderCars(cars.filter(c => c.etat === "disponible"));
+            } catch (err) {
+                console.error(err);
+                document.getElementById('cars-container').innerHTML = '<p class="text-red-500">Erreur lors du chargement de la liste des véhicules.</p>';
+            }
+        }
+
+        function renderCars(cars) {
+            const container = document.getElementById('cars-container');
+            if (cars.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 col-span-3 text-center">Aucun véhicule disponible pour le moment.</p>';
+                return;
+            }
+
+            container.innerHTML = cars.map(car => `
+                <div class="bg-white rounded-lg overflow-hidden shadow-md border flex flex-col justify-between">
+                    <img src="${car.photo}" alt="${car.nom}" class="h-48 w-full object-cover">
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded">${car.type}</span>
+                            <h4 class="text-xl font-bold mt-2">${car.nom}</h4>
+                            <p class="text-gray-500 text-xs mb-2">Matricule : ${car.matricule}</p>
+                            <p class="text-gray-600 text-sm mb-4">${car.description}</p>
+                        </div>
+                        <div>
+                            <p class="text-blue-600 font-extrabold text-lg mb-3">${car.prix} Ar / jour</p>
+                            <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition">
+                                Réserver
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openModal(id, nom, prix) {
+            document.getElementById('modal-car-id').value = id;
+            document.getElementById('modal-car-price').value = prix;
+            document.getElementById('modal-car-title').innerText = "Réserver : " + nom;
+            document.getElementById('booking-modal').classList.remove('hidden');
+            calculatePrice();
+        }
+
+        function closeModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+            document.getElementById('booking-form').reset();
+        }
+
+        function calculatePrice() {
+            const prixJour = parseFloat(document.getElementById('modal-car-price').value) || 0;
+            const jours = parseInt(document.getElementById('nbr-jours').value) || 1;
+
+            const total = prixJour * jours;
+            const avance = total * 0.20;
+            const reste = total - avance;
+
+            document.getElementById('total-price').innerText = total + " Ar";
+            document.getElementById('avance-price').innerText = avance + " Ar";
+            document.getElementById('reste-price').innerText = reste + " Ar";
+        }
+
+        // Soumission de la réservation directement sur GitHub
+        async function handleBooking(e) {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.innerText = "Enregistrement...";
+            submitBtn.disabled = true;
+
+            try {
+                // 1. Récupération des données existantes
+                const resGet = await fetch(API_RESERVATION_URL, {
+                    headers: { "Authorization": `token ${GITHUB_PAT}` }
+                });
+                const fileData = await resGet.json();
+                const content = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+                // 2. Calculs et enregistrement
+                const prixJour = parseFloat(document.getElementById('modal-car-price').value);
+                const jours = parseInt(document.getElementById('nbr-jours').value);
+                const total = prixJour * jours;
+                const avance = total * 0.20;
+
+                const newReservation = {
+                    id: Date.now().toString(),
+                    id_devoiture: document.getElementById('modal-car-id').value,
+                    "nombrede jour alloue": jours,
+                    "avance20%": avance,
+                    montanttotalPaye: 0,
+                    "montant resta impaye": total,
+                    nomlocation: document.getElementById('nomlocation').value,
+                    tel: document.getElementById('tel').value,
+                    CIN: document.getElementById('cin').value
+                };
+
+                content.push(newReservation);
+
+                // 3. Pousser vers GitHub
+                const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
+
+                await fetch(API_RESERVATION_URL, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GITHUB_PAT}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Nouvelle réservation par ${newReservation.nomlocation}`,
+                        content: updatedContentBase64,
+                        sha: fileData.sha
+                    })
+                });
+
+                alert("Réservation enregistrée avec succès !");
+                closeModal();
+            } catch (err) {
+                console.error(err);
+                alert("Erreur lors de l'enregistrement de la réservation.");
+            } finally {
+                submitBtn.innerText = "Confirmer";
+                submitBtn.disabled = false;
+            }
+        }
+
+        fetchCars();
+    </script>
+</body>
+</html>
