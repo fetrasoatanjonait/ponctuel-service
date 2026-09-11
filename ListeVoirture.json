@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "1789129309157",
+    "nom": "voiture",
+    "matricule": "1234 TAB",
+    "type": "4X4",
+    "prix": 300000,
+    "description": "fsdfsf",
+    "photo": "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1789129306436_images.jpg",
+    "etat": "disponible"
+  }
+]
