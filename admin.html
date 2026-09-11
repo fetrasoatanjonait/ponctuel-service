@@ -13,18 +13,17 @@
         <a href="index.html" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Voir le site</a>
     </div>
 
-    <!-- Ajouter une voiture -->
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow mb-8">
         <h2 class="text-xl font-bold mb-4 text-gray-700">Ajouter un nouveau véhicule</h2>
         <form id="car-form" onsubmit="handleAddCar(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" id="nom" placeholder="Nom du véhicule (ex: Karenjy Mazana)" required class="border p-2 rounded">
-            <input type="text" id="matricule" placeholder="Matricule (ex: 1234 TAB)" required class="border p-2 rounded">
-            <input type="text" id="type" placeholder="Type (ex: SUV, Berline, 4x4)" required class="border p-2 rounded">
+            <input type="text" id="nom" placeholder="Nom du véhicule" required class="border p-2 rounded">
+            <input type="text" id="matricule" placeholder="Matricule" required class="border p-2 rounded">
+            <input type="text" id="type" placeholder="Type (SUV, Berline...)" required class="border p-2 rounded">
             <input type="number" id="prix" placeholder="Prix par jour (Ar)" required class="border p-2 rounded">
             <textarea id="description" placeholder="Description du véhicule" required class="border p-2 rounded md:col-span-2"></textarea>
             
             <div class="md:col-span-2">
-                <label class="block text-sm font-bold text-gray-700 mb-1">Photo du véhicule (Sera envoyée sur GitHub)</label>
+                <label class="block text-sm font-bold text-gray-700 mb-1">Photo du véhicule</label>
                 <input type="file" id="photo-file" accept="image/*" required class="border p-2 rounded w-full bg-gray-50">
             </div>
 
@@ -34,7 +33,6 @@
         </form>
     </div>
 
-    <!-- Liste des Réservations -->
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold text-gray-700">Réservations effectuées</h2>
@@ -63,9 +61,13 @@
     <script>
         const REPO_OWNER = "fetrasoatanjonait";
         const REPO_NAME = "ponctuel-service";
-        const GITHUB_PAT = "github_pat"+"_11BYV4CJI02VnaKLqAVLvU_tNwQy660BTLlETMnBh1edE0j9exoHu3Bm1EO5C0Z8OcD2VFQBSPW1gQSTNt";
+  const GITHUB_PAT = "ghp_"+"8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
+     
 
-        // Conversion image en base64 pour upload via GitHub API
+        function decodeUTF8(str) {
+            return decodeURIComponent(escape(atob(str)));
+        }
+
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -82,10 +84,9 @@
             btn.innerText = "Envoi de l'image sur GitHub...";
 
             try {
-                // 1. Upload de la photo dans le dossier images/
                 const fileInput = document.getElementById('photo-file').files[0];
                 const base64Image = await fileToBase64(fileInput);
-                const fileName = `images/${Date.now()}_${fileInput.name.replace(/\s+/g, '_')}`;
+                const fileName = `images/${Date.now()}_${fileInput.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                 const uploadImgUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
 
                 const imgRes = await fetch(uploadImgUrl, {
@@ -100,18 +101,22 @@
                     })
                 });
                 
+                if (!imgRes.ok) throw new Error("Erreur lors de l'upload de l'image. Vérifiez votre Token GitHub.");
+                
                 const imgData = await imgRes.json();
                 const photoGitUrl = imgData.content.download_url;
 
                 btn.innerText = "Mise à jour de ListeVoirture.json...";
 
-                // 2. Récupérer et mettre à jour le fichier ListeVoirture.json
                 const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
                 const jsonRes = await fetch(jsonUrl, {
                     headers: { "Authorization": `token ${GITHUB_PAT}` }
                 });
+                
+                if (!jsonRes.ok) throw new Error("Le fichier ListeVoirture.json est introuvable sur GitHub.");
+
                 const jsonData = await jsonRes.json();
-                const cars = JSON.parse(decodeURIComponent(escape(atob(jsonData.content))));
+                const cars = JSON.parse(decodeUTF8(jsonData.content));
 
                 const newCar = {
                     id: Date.now().toString(),
@@ -126,7 +131,6 @@
 
                 cars.push(newCar);
 
-                // 3. Envoyer la mise à jour sur GitHub
                 const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
                 await fetch(jsonUrl, {
                     method: "PUT",
@@ -145,25 +149,31 @@
                 document.getElementById('car-form').reset();
             } catch (err) {
                 console.error(err);
-                alert("Erreur lors de l'envoi vers GitHub.");
+                alert("Erreur : " + err.message);
             } finally {
                 btn.disabled = false;
                 btn.innerText = "+ Téléverser la photo et ajouter le véhicule";
             }
         }
 
-        // Afficher la liste des réservations
         async function fetchReservations() {
             const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+            const tbody = document.getElementById('reservations-table');
+
             try {
                 const res = await fetch(resUrl, {
                     headers: { "Authorization": `token ${GITHUB_PAT}` }
                 });
-                const data = await res.json();
-                const reservations = JSON.parse(decodeURIComponent(escape(atob(data.content))));
                 
-                const tbody = document.getElementById('reservations-table');
-                if (reservations.length === 0) {
+                if (!res.ok) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-red-500">Fichier resevation.json introuvable sur GitHub. Créez-le avec [].</td></tr>';
+                    return;
+                }
+
+                const data = await res.json();
+                const reservations = JSON.parse(decodeUTF8(data.content));
+                
+                if (!Array.isArray(reservations) || reservations.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-gray-500">Aucune réservation trouvée.</td></tr>';
                     return;
                 }
@@ -180,6 +190,7 @@
                 `).join('');
             } catch (err) {
                 console.error(err);
+                tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-red-500">Erreur lors du décodage de resevation.json.</td></tr>';
             }
         }
 
