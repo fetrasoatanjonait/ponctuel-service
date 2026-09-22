@@ -5,61 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ponctuel Service - Location de Voitures</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
 
-    <nav class="bg-blue-600 p-4 text-white shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold">Ponctuel Service</h1>
-            <a href="admin.html" class="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded text-sm transition">Espace Admin</a>
+    <!-- Navigation -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Logo avec icône -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="bg-blue-600 p-2.5 rounded-xl text-white group-hover:bg-blue-500 transition shadow-md shadow-blue-900/40">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100 4 2 2 0 000-4pt0 0M16 17a2 2 0 100 4 2 2 0 000-4pt0 0M3 9l1.621-3.242A2 2 0 016.415 4h11.17a2 2 0 011.794 1.158L21 9M3 9h18M3 9v8a2 2 0 002 2h14a2 2 0 002-2V9M14 9V5"></path>
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">PONCTUEL</span>
+                    <span class="text-xs font-semibold text-blue-400 block tracking-wider uppercase -mt-1">Service Auto</span>
+                </div>
+            </a>
+
+            <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Espace Admin
+            </a>
         </div>
     </nav>
 
-    <header class="bg-blue-500 text-white py-10 text-center">
-        <h2 class="text-3xl font-extrabold">Location de véhicules sur-mesure</h2>
-        <p class="mt-2">Réservez facilement votre voiture en quelques clics</p>
+    <!-- En-tête Hero -->
+    <header class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-14 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+        <div class="container mx-auto text-center relative z-10 max-w-3xl">
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-3">Location Simple & Rapide</span>
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-3">Réservez votre véhicule en quelques clics</h2>
+            <p class="text-slate-300 text-base md:text-lg">Consultez notre parc automobile, filtrez selon vos besoins et réservez instantanément.</p>
+        </div>
     </header>
 
-    <main class="container mx-auto py-10 px-4">
-        <h3 class="text-2xl font-bold mb-6 text-gray-800">Nos Véhicules Disponibles</h3>
-        <div id="cars-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <p class="text-gray-500">Chargement des véhicules...</p>
+    <!-- Section Principale & Barre de Recherche -->
+    <main class="container mx-auto py-10 px-4 flex-1">
+        
+        <!-- Barre de recherche et Filtres -->
+        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-8 max-w-5xl mx-auto space-y-4">
+            <div class="flex flex-col md:flex-row gap-3">
+                
+                <!-- Champ de recherche texte -->
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                    <input type="text" id="search-input" onkeyup="filterCars()" placeholder="Rechercher par nom, marque, matricule ou type..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+                </div>
+
+                <!-- Filtres rapides par statut -->
+                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600">
+                    <button onclick="setStatusFilter('all')" id="filter-btn-all" class="filter-status-btn bg-white text-slate-900 shadow-sm px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Tous</button>
+                    <button onclick="setStatusFilter('disponible')" id="filter-btn-disponible" class="filter-status-btn hover:text-slate-900 px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Disponibles</button>
+                    <button onclick="setStatusFilter('reserve')" id="filter-btn-reserve" class="filter-status-btn hover:text-slate-900 px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Réservés</button>
+                </div>
+
+            </div>
+            <div class="flex justify-between items-center text-xs text-slate-500 px-1 pt-1">
+                <span>Résultats : <strong id="car-count" class="text-slate-800">0</strong> véhicule(s)</span>
+                <span id="search-indicator" class="hidden text-blue-600 font-medium">Recherche active...</span>
+            </div>
+        </div>
+
+        <!-- Grille des voitures -->
+        <div id="cars-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            <p class="text-slate-400 col-span-3 text-center py-10">Chargement du parc automobile...</p>
         </div>
     </main>
 
-    <div id="booking-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full shadow-xl">
-            <h3 class="text-xl font-bold mb-4 text-gray-800" id="modal-car-title">Réserver une voiture</h3>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2026 Ponctuel Service Auto. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <!-- Modal Galerie Photos -->
+    <div id="gallery-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-3xl w-full shadow-2xl relative border border-slate-100">
+            <button onclick="closeGalleryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 p-2 rounded-full transition">&times;</button>
+            <h3 class="text-xl font-bold mb-4 text-slate-800" id="gallery-car-title">Galerie photos</h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1" id="gallery-images-container">
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeGalleryModal()" class="px-5 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-700 transition">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Réservation -->
+    <div id="booking-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b">
+                <h3 class="text-lg font-bold text-slate-800" id="modal-car-title">Réserver un véhicule</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+            </div>
+            
             <form id="booking-form" onsubmit="handleBooking(event)">
                 <input type="hidden" id="modal-car-id">
                 <input type="hidden" id="modal-car-price">
 
-                <div class="mb-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-1">Nom du Locataire</label>
-                    <input type="text" id="nomlocation" placeholder="ex: Rakoto" required class="w-full border p-2 rounded">
-                </div>
-                <div class="mb-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-1">Téléphone</label>
-                    <input type="tel" id="tel" placeholder="ex: 034 00 000 00" required class="w-full border p-2 rounded">
-                </div>
-                <div class="mb-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-1">Numéro CIN</label>
-                    <input type="text" id="cin" placeholder="ex: 101 211 xxx xxx" required class="w-full border p-2 rounded">
-                </div>
-                <div class="mb-3">
-                    <label class="block text-gray-700 text-sm font-bold mb-1">Nombre de jours alloués</label>
-                    <input type="number" id="nbr-jours" min="1" value="1" required oninput="calculatePrice()" class="w-full border p-2 rounded">
+                <div class="space-y-3 mb-4">
+                    <div>
+                        <label class="block text-slate-700 text-xs font-bold mb-1">Nom du Locataire</label>
+                        <input type="text" id="nomlocation" placeholder="ex: Jean Rakoto" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-slate-700 text-xs font-bold mb-1">Téléphone</label>
+                            <input type="tel" id="tel" placeholder="034 00 000 00" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 text-xs font-bold mb-1">Numéro CIN</label>
+                            <input type="text" id="cin" placeholder="101 211 xxx xxx" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Plage de dates -->
+                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                        <div>
+                            <label class="block text-slate-700 text-xs font-bold mb-1">Date de début</label>
+                            <input type="date" id="date-debut" required onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-700 text-xs font-bold mb-1">Date de fin</label>
+                            <input type="date" id="date-fin" required onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm space-y-1">
-                    <p class="flex justify-between"><span>Montant Total :</span> <strong id="total-price">0</strong></p>
-                    <p class="flex justify-between text-blue-700"><span>Avance requise (20%) :</span> <strong id="avance-price">0</strong></p>
-                    <p class="flex justify-between text-red-600"><span>Reste à payer :</span> <strong id="reste-price">0</strong></p>
+                <div class="mb-5 p-3.5 bg-blue-50/60 border border-blue-100 rounded-xl text-xs space-y-1.5">
+                    <p class="flex justify-between text-slate-600"><span>Durée :</span> <strong id="duree-jours" class="text-slate-800">0 jour(s)</strong></p>
+                    <p class="flex justify-between text-slate-600"><span>Montant Total :</span> <strong id="total-price" class="text-slate-800">0 Ar</strong></p>
+                    <p class="flex justify-between text-blue-700 font-medium"><span>Avance requise (20%) :</span> <strong id="avance-price">0 Ar</strong></p>
+                    <p class="flex justify-between text-amber-700 font-medium"><span>Reste à payer :</span> <strong id="reste-price">0 Ar</strong></p>
                 </div>
 
-                <div class="flex justify-end space-x-2">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded text-gray-600">Annuler</button>
-                    <button type="submit" id="submit-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold">Confirmer</button>
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50">Annuler</button>
+                    <button type="submit" id="submit-btn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition">Confirmer la demande</button>
                 </div>
             </form>
         </div>
@@ -73,6 +166,9 @@
         const CARS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/ListeVoirture.json`;
         const API_RESERVATION_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
 
+        let allCars = [];
+        let currentStatusFilter = 'all';
+
         function decodeUTF8(str) {
             return decodeURIComponent(escape(atob(str)));
         }
@@ -81,46 +177,166 @@
             try {
                 const res = await fetch(CARS_URL + "?nocache=" + Date.now());
                 if (!res.ok) throw new Error("Fichier non trouvé");
-                const cars = await res.json();
-                renderCars(cars.filter(c => c.etat === "disponible"));
+                allCars = await res.json();
+                filterCars();
             } catch (err) {
                 console.error(err);
-                document.getElementById('cars-container').innerHTML = '<p class="text-red-500">Erreur lors du chargement des véhicules. Vérifiez la présence de ListeVoirture.json.</p>';
+                document.getElementById('cars-container').innerHTML = '<p class="text-rose-500 col-span-3 text-center py-10 font-medium">Erreur lors du chargement du parc automobile.</p>';
             }
+        }
+
+        function setStatusFilter(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.filter-status-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+                btn.classList.add('hover:text-slate-900');
+            });
+            const activeBtn = document.getElementById(`filter-btn-${status}`);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+            }
+            filterCars();
+        }
+
+        function filterCars() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            
+            const filtered = allCars.filter(car => {
+                const matchesQuery = 
+                    (car.nom && car.nom.toLowerCase().includes(query)) ||
+                    (car.type && car.type.toLowerCase().includes(query)) ||
+                    (car.matricule && car.matricule.toLowerCase().includes(query)) ||
+                    (car.description && car.description.toLowerCase().includes(query));
+
+                const matchesStatus = 
+                    currentStatusFilter === 'all' || 
+                    (currentStatusFilter === 'disponible' && car.etat !== 'reserve') ||
+                    (currentStatusFilter === 'reserve' && car.etat === 'reserve');
+
+                return matchesQuery && matchesStatus;
+            });
+
+            document.getElementById('car-count').innerText = filtered.length;
+            renderCars(filtered);
         }
 
         function renderCars(cars) {
             const container = document.getElementById('cars-container');
             if (!cars || cars.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 col-span-3 text-center">Aucun véhicule disponible pour le moment.</p>';
+                container.innerHTML = `
+                    <div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
+                        <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-slate-500 font-medium">Aucun véhicule ne correspond à votre recherche.</p>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = cars.map(car => `
-                <div class="bg-white rounded-lg overflow-hidden shadow-md border flex flex-col justify-between">
-                    <img src="${car.photo}" alt="${car.nom}" class="h-48 w-full object-cover">
-                    <div class="p-4 flex-1 flex flex-col justify-between">
+            container.innerHTML = cars.map(car => {
+                const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
+                const mainPhoto = photosList[0] || 'https://via.placeholder.com/400x250?text=Pas+de+photo';
+                const isReserved = car.etat === "reserve";
+
+                return `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative ${isReserved ? 'opacity-70 grayscale-[30%]' : ''}">
+                    
+                    <!-- Statut Badge -->
+                    <div class="absolute top-3 left-3 z-10">
+                        ${isReserved ? `
+                            <span class="bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                                🚫 Réservé
+                            </span>
+                        ` : `
+                            <span class="bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                                ✅ Disponible
+                            </span>
+                        `}
+                    </div>
+
+                    <div class="relative bg-slate-100 group">
+                        <img src="${mainPhoto}" alt="${car.nom}" class="h-48 w-full object-cover group-hover:scale-105 transition duration-300">
+                        <span class="absolute bottom-2 right-2 bg-slate-900/70 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-lg font-medium">
+                            📷 ${photosList.length} photo(s)
+                        </span>
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between">
                         <div>
-                            <span class="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-1 rounded">${car.type}</span>
-                            <h4 class="text-xl font-bold mt-2">${car.nom}</h4>
-                            <p class="text-gray-500 text-xs mb-2">Matricule : ${car.matricule}</p>
-                            <p class="text-gray-600 text-sm mb-4">${car.description}</p>
+                            <div class="flex justify-between items-start gap-2 mb-1">
+                                <span class="text-[11px] font-bold bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-md border border-blue-100 uppercase tracking-wider">${car.type}</span>
+                                <span class="text-xs text-slate-400 font-mono">${car.matricule}</span>
+                            </div>
+                            <h4 class="text-lg font-bold text-slate-800 mt-1">${car.nom}</h4>
+                            <p class="text-slate-500 text-xs mt-1 mb-4 line-clamp-2">${car.description}</p>
                         </div>
-                        <div>
-                            <p class="text-blue-600 font-extrabold text-lg mb-3">${car.prix} Ar / jour</p>
-                            <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold transition">
-                                Réserver
-                            </button>
+
+                        <div class="pt-3 border-t border-slate-100">
+                            <div class="flex justify-between items-baseline mb-4">
+                                <span class="text-xs text-slate-400">Tarif location</span>
+                                <p class="text-blue-600 font-black text-xl">${car.prix.toLocaleString()} <span class="text-xs font-normal text-slate-500">Ar / jour</span></p>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="openGalleryModal('${car.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-semibold transition border border-slate-200/60">
+                                    🖼️ Photos
+                                </button>
+                                
+                                ${isReserved ? `
+                                    <button disabled class="bg-slate-200 text-slate-400 py-2.5 rounded-xl text-xs font-semibold cursor-not-allowed">
+                                        Indisponible
+                                    </button>
+                                ` : `
+                                    <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition">
+                                        Réserver
+                                    </button>
+                                `}
+                            </div>
                         </div>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
+        }
+
+        function openGalleryModal(carId) {
+            const car = allCars.find(c => c.id === carId);
+            if (!car) return;
+
+            document.getElementById('gallery-car-title').innerText = "Photos : " + car.nom;
+            const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
+
+            const container = document.getElementById('gallery-images-container');
+            if (photosList.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-6">Aucune photo disponible pour ce véhicule.</p>';
+            } else {
+                container.innerHTML = photosList.map(url => `
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
+                        <a href="${url}" target="_blank">
+                            <img src="${url}" class="h-36 w-full object-cover hover:scale-105 transition duration-200" alt="Photo véhicule">
+                        </a>
+                    </div>
+                `).join('');
+            }
+
+            document.getElementById('gallery-modal').classList.remove('hidden');
+        }
+
+        function closeGalleryModal() {
+            document.getElementById('gallery-modal').classList.add('hidden');
         }
 
         function openModal(id, nom, prix) {
             document.getElementById('modal-car-id').value = id;
             document.getElementById('modal-car-price').value = prix;
             document.getElementById('modal-car-title').innerText = "Réserver : " + nom;
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-debut').min = today;
+            document.getElementById('date-debut').value = today;
+            
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            document.getElementById('date-fin').min = today;
+            document.getElementById('date-fin').value = tomorrow;
+
             document.getElementById('booking-modal').classList.remove('hidden');
             calculatePrice();
         }
@@ -131,22 +347,45 @@
         }
 
         function calculatePrice() {
+            const dateDebut = new Date(document.getElementById('date-debut').value);
+            const dateFin = new Date(document.getElementById('date-fin').value);
             const prixJour = parseFloat(document.getElementById('modal-car-price').value) || 0;
-            const jours = parseInt(document.getElementById('nbr-jours').value) || 1;
+
+            if (isNaN(dateDebut.getTime()) || isNaN(dateFin.getTime()) || dateFin <= dateDebut) {
+                document.getElementById('duree-jours').innerText = "0 jour";
+                document.getElementById('total-price').innerText = "0 Ar";
+                document.getElementById('avance-price').innerText = "0 Ar";
+                document.getElementById('reste-price').innerText = "0 Ar";
+                return 0;
+            }
+
+            const diffTime = Math.abs(dateFin - dateDebut);
+            const jours = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
             const total = prixJour * jours;
             const avance = total * 0.20;
             const reste = total - avance;
 
-            document.getElementById('total-price').innerText = total + " Ar";
-            document.getElementById('avance-price').innerText = avance + " Ar";
-            document.getElementById('reste-price').innerText = reste + " Ar";
+            document.getElementById('duree-jours').innerText = jours + " jour(s)";
+            document.getElementById('total-price').innerText = total.toLocaleString() + " Ar";
+            document.getElementById('avance-price').innerText = avance.toLocaleString() + " Ar";
+            document.getElementById('reste-price').innerText = reste.toLocaleString() + " Ar";
+
+            return jours;
         }
 
         async function handleBooking(e) {
             e.preventDefault();
+            const dateDebut = document.getElementById('date-debut').value;
+            const dateFin = document.getElementById('date-fin').value;
+
+            if (new Date(dateFin) <= new Date(dateDebut)) {
+                alert("La date de fin doit être strictement supérieure à la date de début.");
+                return;
+            }
+
             const submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerText = "Enregistrement...";
+            submitBtn.innerText = "Traitement en cours...";
             submitBtn.disabled = true;
 
             try {
@@ -154,26 +393,29 @@
                     headers: { "Authorization": `token ${GITHUB_PAT}` }
                 });
                 
-                if (!resGet.ok) throw new Error("Impossible de lire resevation.json. Vérifiez que le fichier existe sur GitHub.");
+                if (!resGet.ok) throw new Error("Impossible d'accéder au fichier des réservations.");
                 
                 const fileData = await resGet.json();
                 const content = JSON.parse(decodeUTF8(fileData.content));
 
+                const jours = calculatePrice();
                 const prixJour = parseFloat(document.getElementById('modal-car-price').value);
-                const jours = parseInt(document.getElementById('nbr-jours').value);
                 const total = prixJour * jours;
                 const avance = total * 0.20;
 
                 const newReservation = {
                     id: Date.now().toString(),
                     id_devoiture: document.getElementById('modal-car-id').value,
+                    date_debut: dateDebut,
+                    date_fin: dateFin,
                     "nombrede jour alloue": jours,
                     "avance20%": avance,
                     montanttotalPaye: 0,
-                    "montant resta impaye": total,
+                    "montant resta impaye": total - avance,
                     nomlocation: document.getElementById('nomlocation').value,
                     tel: document.getElementById('tel').value,
-                    CIN: document.getElementById('cin').value
+                    CIN: document.getElementById('cin').value,
+                    statut: "en_attente"
                 };
 
                 content.push(newReservation);
@@ -187,19 +429,19 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        message: `Nouvelle réservation par ${newReservation.nomlocation}`,
+                        message: `Demande de réservation par ${newReservation.nomlocation}`,
                         content: updatedContentBase64,
                         sha: fileData.sha
                     })
                 });
 
-                alert("Réservation enregistrée avec succès !");
+                alert("Votre demande a été transmise avec succès ! Elle sera traitée sous peu par notre équipe.");
                 closeModal();
             } catch (err) {
                 console.error(err);
                 alert("Erreur : " + err.message);
             } finally {
-                submitBtn.innerText = "Confirmer";
+                submitBtn.innerText = "Confirmer la demande";
                 submitBtn.disabled = false;
             }
         }
