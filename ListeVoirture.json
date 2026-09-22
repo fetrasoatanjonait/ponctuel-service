@@ -14,18 +14,5 @@
       "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057903041_4_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
     ],
     "etat": "disponible"
-  },
-  {
-    "id": "1790057922426",
-    "nom": "",
-    "matricule": "",
-    "type": "",
-    "prix": null,
-    "description": "",
-    "photos": [
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057916209_0_images__1_.jpg",
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057919036_1_images__2_.jpg"
-    ],
-    "etat": "disponible"
   }
 ]
