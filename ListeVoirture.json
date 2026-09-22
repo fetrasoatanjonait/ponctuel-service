@@ -1,3 +1,18 @@
 [
- 
+  {
+    "id": "1790057918278",
+    "nom": "voiture",
+    "matricule": "1234 TAB",
+    "type": "4X4",
+    "prix": 15000,
+    "description": "SUV très grand confort, climatisé, idéal pour les longs trajets et voyages en province avec chauffeur inclus.",
+    "photos": [
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057891537_0_images__1_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057894207_1_images__2_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057896807_2_images__3_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057900507_3_images__4_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057903041_4_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
+    ],
+    "etat": "disponible"
+  }
 ]
