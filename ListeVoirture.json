@@ -14,5 +14,19 @@
       "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790057903041_4_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
     ],
     "etat": "disponible"
+  },
+  {
+    "id": "1790058463007",
+    "nom": "fetrasoa",
+    "matricule": "1234 TAB",
+    "type": "4X4",
+    "prix": 3000,
+    "description": "Détails, options, nombre de places, climatisation, etc.",
+    "photos": [
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790058454059_0_images__3_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790058456131_1_images__4_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1790058458192_2_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
+    ],
+    "etat": "disponible"
   }
 ]
