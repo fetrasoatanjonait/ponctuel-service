@@ -3,66 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Ponctuel Service</title>
+    <title>Admin - Ponctual Services</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
-<body class="bg-gray-100 font-sans p-6">
+<body class="bg-slate-100 text-slate-800 antialiased p-4 md:p-8">
 
-    <div class="max-w-5xl mx-auto flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Panneau d'administration</h1>
-        <a href="index.html" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Voir le site</a>
-    </div>
-
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow mb-8">
-        <h2 class="text-xl font-bold mb-4 text-gray-700">Ajouter un nouveau véhicule</h2>
-        <form id="car-form" onsubmit="handleAddCar(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="text" id="nom" placeholder="Nom du véhicule" required class="border p-2 rounded">
-            <input type="text" id="matricule" placeholder="Matricule" required class="border p-2 rounded">
-            <input type="text" id="type" placeholder="Type (SUV, Berline...)" required class="border p-2 rounded">
-            <input type="number" id="prix" placeholder="Prix par jour (Ar)" required class="border p-2 rounded">
-            <textarea id="description" placeholder="Description du véhicule" required class="border p-2 rounded md:col-span-2"></textarea>
-            
-            <div class="md:col-span-2">
-                <label class="block text-sm font-bold text-gray-700 mb-1">Photo du véhicule</label>
-                <input type="file" id="photo-file" accept="image/*" required class="border p-2 rounded w-full bg-gray-50">
+    <!-- Header Navigation -->
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 p-2.5 rounded-xl text-white shadow-md shadow-blue-600/30">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17a2 2 0 100 4 2 2 0 000-4pt0 0M16 17a2 2 0 100 4 2 2 0 000-4pt0 0M3 9l1.621-3.242A2 2 0 016.415 4h11.17a2 2 0 011.794 1.158L21 9M3 9h18M3 9v8a2 2 0 002 2h14a2 2 0 002-2V9M14 9V5"></path>
+                </svg>
             </div>
-
-            <button type="submit" id="add-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold p-3 rounded md:col-span-2 transition">
-                + Téléverser la photo et ajouter le véhicule
-            </button>
-        </form>
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Panneau d'administration</h1>
+                <p class="text-xs text-slate-500">Ponctual Services Auto</p>
+            </div>
+        </div>
+        <a href="index.html" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition">Voir le site public</a>
     </div>
 
-    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold text-gray-700">Réservations effectuées</h2>
-            <button onclick="fetchReservations()" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Actualiser</button>
+    <!-- MENU DE NAVIGATION (NAVIGATION PAR ONGLETS) -->
+    <div class="max-w-6xl mx-auto mb-8 flex gap-3 border-b border-slate-200 pb-3">
+        <button id="btn-tab-reservations" onclick="switchTab('reservations')" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+            📅 Réservations & Finance
+        </button>
+        <button id="btn-tab-cars" onclick="switchTab('cars')" class="px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition flex items-center gap-2">
+            🚗 Gestion des Véhicules
+        </button>
+    </div>
+
+    <!-- SECTION 1: RÉSERVATIONS ET FINANCES -->
+    <div id="section-reservations" class="space-y-8">
+        <!-- TABLEAU DE BORD FINANCIER -->
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">📊 Récapitulatif Financier (Contrats Validés)</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-blue-600">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Total Entrant</p>
+                    <p class="text-2xl font-black text-blue-600 mt-1" id="stat-total-entrant">0 Ar</p>
+                    <p class="text-[11px] text-slate-400 mt-1">100% des réservations validées</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-emerald-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Part / Bénéfice (10%)</p>
+                    <p class="text-2xl font-black text-emerald-600 mt-1" id="stat-part-10">0 Ar</p>
+                    <p class="text-[11px] text-slate-400 mt-1">10% commission nette</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-amber-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Avances Reçues (20%)</p>
+                    <p class="text-2xl font-black text-amber-600 mt-1" id="stat-avances">0 Ar</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Acomptes encaissés</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 border-l-4 border-l-rose-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Reste à Recouvrer</p>
+                    <p class="text-2xl font-black text-rose-600 mt-1" id="stat-reste">0 Ar</p>
+                    <p class="text-[11px] text-slate-400 mt-1">Solde restant du client</p>
+                </div>
+
+            </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full border text-sm text-left border-collapse">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-3 border">Locataire</th>
-                        <th class="p-3 border">Contact / CIN</th>
-                        <th class="p-3 border">ID Voiture</th>
-                        <th class="p-3 border">Durée</th>
-                        <th class="p-3 border">Avance (20%)</th>
-                        <th class="p-3 border">Reste à payer</th>
-                    </tr>
-                </thead>
-                <tbody id="reservations-table">
-                    <tr><td colspan="6" class="p-3 text-center text-gray-500">Chargement...</td></tr>
-                </tbody>
-            </table>
+        <!-- Réservations -->
+        <div class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-slate-800">Demandes de Réservations</h2>
+                <button onclick="cleanAndFetchReservations()" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">Actualiser & Nettoyer</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-left text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                            <th class="p-3">Locataire</th>
+                            <th class="p-3">Contact</th>
+                            <th class="p-3">Voiture</th>
+                            <th class="p-3">Période</th>
+                            <th class="p-3">Montants</th>
+                            <th class="p-3">Statut</th>
+                            <th class="p-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservations-table">
+                        <tr><td colspan="7" class="p-4 text-center text-slate-400">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: GESTION DES VÉHICULES (AJOUT + FLOTTE) -->
+    <div id="section-cars" class="space-y-8 hidden">
+        <!-- Formulaire -->
+        <div class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-slate-800" id="form-title">Ajouter un nouveau véhicule</h2>
+                <button id="cancel-edit-btn" onclick="resetForm()" class="hidden text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg font-medium">Annuler modification</button>
+            </div>
+
+            <form id="car-form" onsubmit="handleSaveCar(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="hidden" id="edit-car-id" value="">
+
+                <input type="text" id="nom" placeholder="Nom du véhicule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <input type="text" id="matricule" placeholder="Matricule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <input type="text" id="type" placeholder="Type (SUV, Berline...)" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <input type="number" id="prix" placeholder="Prix par jour (Ar)" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                <textarea id="description" placeholder="Description du véhicule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 md:col-span-2"></textarea>
+                
+                <div class="md:col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Photos du véhicule</label>
+                    <input type="file" id="photo-files" accept="image/*" multiple class="border border-slate-200 p-2 rounded-xl w-full text-xs bg-slate-50">
+                </div>
+
+                <button type="submit" id="save-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-3 rounded-xl md:col-span-2 transition text-sm shadow-md shadow-emerald-600/20">
+                    + Ajouter le véhicule
+                </button>
+            </form>
+        </div>
+
+        <!-- Flotte -->
+        <div class="max-w-6xl mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-slate-800">Flotte de Véhicules</h2>
+                <button onclick="fetchCarsAdmin()" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700">Actualiser</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse text-left text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
+                            <th class="p-3">Aperçu</th>
+                            <th class="p-3">Véhicule</th>
+                            <th class="p-3">Matricule</th>
+                            <th class="p-3">État</th>
+                            <th class="p-3">Prix / Jour</th>
+                            <th class="p-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cars-table">
+                        <tr><td colspan="6" class="p-4 text-center text-slate-400">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
         const REPO_OWNER = "fetrasoatanjonait";
         const REPO_NAME = "ponctuel-service";
-  const GITHUB_PAT = "ghp_"+"8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
-     
+         const GITHUB_PAT = "ghp_"+"8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
+        let allCarsList = [];
+
+        // Fonction pour gérer le changement d'onglet
+        function switchTab(tab) {
+            const secReservations = document.getElementById('section-reservations');
+            const secCars = document.getElementById('section-cars');
+            const btnReservations = document.getElementById('btn-tab-reservations');
+            const btnCars = document.getElementById('btn-tab-cars');
+
+            if (tab === 'reservations') {
+                secReservations.classList.remove('hidden');
+                secCars.classList.add('hidden');
+                btnReservations.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-md shadow-blue-600/20 transition flex items-center gap-2";
+                btnCars.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition flex items-center gap-2";
+            } else {
+                secCars.classList.remove('hidden');
+                secReservations.classList.add('hidden');
+                btnCars.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-blue-600 text-white shadow-md shadow-blue-600/20 transition flex items-center gap-2";
+                btnReservations.className = "px-5 py-2.5 rounded-xl font-bold text-xs bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 transition flex items-center gap-2";
+            }
+        }
 
         function decodeUTF8(str) {
             return decodeURIComponent(escape(atob(str)));
@@ -77,124 +193,343 @@
             });
         }
 
-        async function handleAddCar(e) {
-            e.preventDefault();
-            const btn = document.getElementById('add-btn');
-            btn.disabled = true;
-            btn.innerText = "Envoi de l'image sur GitHub...";
+        function calculateFinancials(reservations) {
+            let totalEntrant = 0;
+            let totalAvances = 0;
+            let totalReste = 0;
+
+            reservations.forEach(r => {
+                if (r.statut === "validee") {
+                    const avance = parseFloat(r["avance20%"]) || 0;
+                    const reste = parseFloat(r["montant resta impaye"]) || 0;
+                    totalEntrant += (avance + reste);
+                    totalAvances += avance;
+                    totalReste += reste;
+                }
+            });
+
+            const part10 = totalEntrant * 0.10;
+
+            document.getElementById('stat-total-entrant').innerText = totalEntrant.toLocaleString() + " Ar";
+            document.getElementById('stat-part-10').innerText = part10.toLocaleString() + " Ar";
+            document.getElementById('stat-avances').innerText = totalAvances.toLocaleString() + " Ar";
+            document.getElementById('stat-reste').innerText = totalReste.toLocaleString() + " Ar";
+        }
+
+        async function cleanAndFetchReservations() {
+            const todayStr = new Date().toISOString().split('T')[0];
 
             try {
-                const fileInput = document.getElementById('photo-file').files[0];
-                const base64Image = await fileToBase64(fileInput);
-                const fileName = `images/${Date.now()}_${fileInput.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                const uploadImgUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+                const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+                const resGet = await fetch(resUrl + "?nocache=" + Date.now(), { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+                const resData = await resGet.json();
+                let reservations = JSON.parse(decodeUTF8(resData.content));
 
-                const imgRes = await fetch(uploadImgUrl, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `token ${GITHUB_PAT}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: `Upload image: ${fileInput.name}`,
-                        content: base64Image
-                    })
+                const activeReservations = [];
+                const expiredCarIdsToFree = [];
+
+                reservations.forEach(r => {
+                    if (r.date_fin && r.date_fin < todayStr) {
+                        if (r.statut === "validee") {
+                            expiredCarIdsToFree.push(r.id_devoiture);
+                        }
+                    } else {
+                        activeReservations.push(r);
+                    }
                 });
-                
-                if (!imgRes.ok) throw new Error("Erreur lors de l'upload de l'image. Vérifiez votre Token GitHub.");
-                
-                const imgData = await imgRes.json();
-                const photoGitUrl = imgData.content.download_url;
 
-                btn.innerText = "Mise à jour de ListeVoirture.json...";
+                if (activeReservations.length !== reservations.length) {
+                    const updatedResBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(activeReservations, null, 2))));
+                    await fetch(resUrl, {
+                        method: "PUT",
+                        headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            message: "Suppression automatique des réservations terminées",
+                            content: updatedResBase64,
+                            sha: resData.sha
+                        })
+                    });
 
-                const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
-                const jsonRes = await fetch(jsonUrl, {
+                    for (let carId of expiredCarIdsToFree) {
+                        await changeCarState(carId, "disponible");
+                    }
+                }
+
+                calculateFinancials(activeReservations);
+                renderReservationsTable(activeReservations);
+                fetchCarsAdmin();
+            } catch (err) {
+                console.error("Erreur lors du nettoyage :", err);
+            }
+        }
+
+        function renderReservationsTable(reservations) {
+            const tbody = document.getElementById('reservations-table');
+            if (!reservations || reservations.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Aucune réservation active.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = reservations.map(r => {
+                const car = allCarsList.find(c => c.id === r.id_devoiture);
+                const carName = car ? car.nom : `ID: ${r.id_devoiture}`;
+                const status = r.statut || "en_attente";
+
+                let statusBadge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold text-[10px]">En attente</span>`;
+                if (status === "validee") statusBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold text-[10px]">Validée</span>`;
+                if (status === "refusee") statusBadge = `<span class="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded-full font-bold text-[10px]">Refusée</span>`;
+
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="p-3 font-bold text-slate-800">${r.nomlocation}</td>
+                        <td class="p-3 text-slate-500">${r.tel}<br><span class="text-[10px] text-slate-400">CIN: ${r.CIN}</span></td>
+                        <td class="p-3 font-semibold text-slate-700">${carName}</td>
+                        <td class="p-3 text-slate-500">
+                            ${r.date_debut || 'N/A'} au ${r.date_fin || 'N/A'}<br>
+                            <span class="font-bold text-slate-700">(${r["nombrede jour alloue"]} j)</span>
+                        </td>
+                        <td class="p-3">
+                            Avance: <b>${(parseFloat(r["avance20%"])||0).toLocaleString()} Ar</b><br>
+                            Reste: <b class="text-rose-600">${(parseFloat(r["montant resta impaye"])||0).toLocaleString()} Ar</b>
+                        </td>
+                        <td class="p-3">${statusBadge}</td>
+                        <td class="p-3 space-x-1">
+                            ${status === 'en_attente' ? `
+                                <button onclick="updateReservationStatus('${r.id}', '${r.id_devoiture}', 'validee')" class="bg-emerald-600 text-white px-2 py-1 rounded-lg font-bold">Valider</button>
+                                <button onclick="updateReservationStatus('${r.id}', '${r.id_devoiture}', 'refusee')" class="bg-rose-600 text-white px-2 py-1 rounded-lg font-bold">Refuser</button>
+                            ` : `
+                                <button onclick="deleteReservation('${r.id}')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded-lg">Supprimer</button>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function fetchCarsAdmin() {
+            const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
+            const tbody = document.getElementById('cars-table');
+
+            try {
+                const res = await fetch(jsonUrl + "?nocache=" + Date.now(), {
                     headers: { "Authorization": `token ${GITHUB_PAT}` }
                 });
-                
-                if (!jsonRes.ok) throw new Error("Le fichier ListeVoirture.json est introuvable sur GitHub.");
 
-                const jsonData = await jsonRes.json();
-                const cars = JSON.parse(decodeUTF8(jsonData.content));
+                const data = await res.json();
+                allCarsList = JSON.parse(decodeUTF8(data.content));
 
-                const newCar = {
+                tbody.innerHTML = allCarsList.map(c => {
+                    const photos = Array.isArray(c.photos) ? c.photos : (c.photo ? [c.photo] : []);
+                    const mainPhoto = photos[0] || 'https://via.placeholder.com/60';
+                    const isReserved = c.etat === "reserve";
+
+                    return `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50">
+                            <td class="p-2"><img src="${mainPhoto}" class="h-10 w-14 object-cover rounded-lg border"></td>
+                            <td class="p-3 font-bold text-slate-800">${c.nom}</td>
+                            <td class="p-3 text-slate-500">${c.matricule}</td>
+                            <td class="p-3">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${isReserved ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">
+                                    ${isReserved ? '🚫 RÉSERVÉ' : '✅ DISPONIBLE'}
+                                </span>
+                            </td>
+                            <td class="p-3 font-semibold text-blue-600">${c.prix.toLocaleString()} Ar</td>
+                            <td class="p-3 space-x-1">
+                                <button onclick="prepareEditCar('${c.id}')" class="bg-amber-500 text-white px-2 py-1 rounded-lg font-bold">Modifier</button>
+                                <button onclick="deleteCar('${c.id}')" class="bg-rose-600 text-white px-2 py-1 rounded-lg font-bold">Supprimer</button>
+                                ${isReserved ? `
+                                    <button onclick="changeCarState('${c.id}', 'disponible')" class="bg-blue-600 text-white px-2 py-1 rounded-lg font-bold">Libérer</button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function changeCarState(carId, newState) {
+            const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
+            const jsonRes = await fetch(jsonUrl, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+            const jsonData = await jsonRes.json();
+            let cars = JSON.parse(decodeUTF8(jsonData.content));
+
+            cars = cars.map(c => c.id === carId ? { ...c, etat: newState } : c);
+
+            const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
+            await fetch(jsonUrl, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: `Mise à jour état voiture ${carId} -> ${newState}`,
+                    content: updatedContentBase64,
+                    sha: jsonData.sha
+                })
+            });
+        }
+
+        async function updateReservationStatus(resId, carId, newStatus) {
+            try {
+                const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+                const resGet = await fetch(resUrl, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+                const resData = await resGet.json();
+                let reservations = JSON.parse(decodeUTF8(resData.content));
+
+                reservations = reservations.map(r => r.id === resId ? { ...r, statut: newStatus } : r);
+
+                const updatedResBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(reservations, null, 2))));
+                await fetch(resUrl, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message: `Changement statut réservation ${resId} -> ${newStatus}`,
+                        content: updatedResBase64,
+                        sha: resData.sha
+                    })
+                });
+
+                const targetState = (newStatus === "validee") ? "reserve" : "disponible";
+                await changeCarState(carId, targetState);
+
+                alert(`Réservation ${newStatus === 'validee' ? 'validée' : 'refusée'} !`);
+                cleanAndFetchReservations();
+            } catch (err) {
+                console.error(err);
+                alert("Erreur : " + err.message);
+            }
+        }
+
+        async function deleteReservation(resId) {
+            if (!confirm("Voulez-vous supprimer cette réservation ?")) return;
+            const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
+            const resGet = await fetch(resUrl, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+            const resData = await resGet.json();
+            let reservations = JSON.parse(decodeUTF8(resData.content)).filter(r => r.id !== resId);
+
+            const updatedResBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(reservations, null, 2))));
+            await fetch(resUrl, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: `Suppression réservation ${resId}`,
+                    content: updatedResBase64,
+                    sha: resData.sha
+                })
+            });
+
+            cleanAndFetchReservations();
+        }
+
+        function prepareEditCar(id) {
+            const car = allCarsList.find(c => c.id === id);
+            if (!car) return;
+
+            // Basculer automatiquement sur l'onglet de gestion des véhicules
+            switchTab('cars');
+
+            document.getElementById('edit-car-id').value = car.id;
+            document.getElementById('nom').value = car.nom;
+            document.getElementById('matricule').value = car.matricule;
+            document.getElementById('type').value = car.type;
+            document.getElementById('prix').value = car.prix;
+            document.getElementById('description').value = car.description;
+
+            document.getElementById('form-title').innerText = "Modifier : " + car.nom;
+            document.getElementById('save-btn').innerText = "Enregistrer modifications";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetForm() {
+            document.getElementById('edit-car-id').value = "";
+            document.getElementById('car-form').reset();
+            document.getElementById('form-title').innerText = "Ajouter un nouveau véhicule";
+            document.getElementById('save-btn').innerText = "+ Ajouter le véhicule";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        async function handleSaveCar(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-car-id').value;
+            const isEditing = editId !== "";
+            const files = document.getElementById('photo-files').files;
+            let uploadedPhotoUrls = [];
+
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const base64Image = await fileToBase64(file);
+                    const fileName = `images/${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                    const uploadImgUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${fileName}`;
+
+                    const imgRes = await fetch(uploadImgUrl, {
+                        method: "PUT",
+                        headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                        body: JSON.stringify({ message: `Upload image: ${file.name}`, content: base64Image })
+                    });
+                    const imgData = await imgRes.json();
+                    uploadedPhotoUrls.push(imgData.content.download_url);
+                }
+            }
+
+            const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
+            const jsonRes = await fetch(jsonUrl, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+            const jsonData = await jsonRes.json();
+            let cars = JSON.parse(decodeUTF8(jsonData.content));
+
+            if (isEditing) {
+                cars = cars.map(car => car.id === editId ? {
+                    ...car,
+                    nom: document.getElementById('nom').value,
+                    matricule: document.getElementById('matricule').value,
+                    type: document.getElementById('type').value,
+                    prix: parseFloat(document.getElementById('prix').value),
+                    description: document.getElementById('description').value,
+                    photos: uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls : car.photos
+                } : car);
+            } else {
+                cars.push({
                     id: Date.now().toString(),
                     nom: document.getElementById('nom').value,
                     matricule: document.getElementById('matricule').value,
                     type: document.getElementById('type').value,
                     prix: parseFloat(document.getElementById('prix').value),
                     description: document.getElementById('description').value,
-                    photo: photoGitUrl,
+                    photos: uploadedPhotoUrls,
                     etat: "disponible"
-                };
-
-                cars.push(newCar);
-
-                const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
-                await fetch(jsonUrl, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `token ${GITHUB_PAT}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: `Ajout véhicule ${newCar.nom}`,
-                        content: updatedContentBase64,
-                        sha: jsonData.sha
-                    })
                 });
-
-                alert("Véhicule et photo ajoutés avec succès !");
-                document.getElementById('car-form').reset();
-            } catch (err) {
-                console.error(err);
-                alert("Erreur : " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "+ Téléverser la photo et ajouter le véhicule";
             }
+
+            const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
+            await fetch(jsonUrl, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "Mise à jour voitures", content: updatedContentBase64, sha: jsonData.sha })
+            });
+
+            resetForm();
+            fetchCarsAdmin().then(cleanAndFetchReservations);
         }
 
-        async function fetchReservations() {
-            const resUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
-            const tbody = document.getElementById('reservations-table');
+        async function deleteCar(id) {
+            if (!confirm("Voulez-vous vraiment supprimer ce véhicule ?")) return;
+            const jsonUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/ListeVoirture.json`;
+            const jsonRes = await fetch(jsonUrl, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
+            const jsonData = await jsonRes.json();
+            let cars = JSON.parse(decodeUTF8(jsonData.content)).filter(c => c.id !== id);
 
-            try {
-                const res = await fetch(resUrl, {
-                    headers: { "Authorization": `token ${GITHUB_PAT}` }
-                });
-                
-                if (!res.ok) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-red-500">Fichier resevation.json introuvable sur GitHub. Créez-le avec [].</td></tr>';
-                    return;
-                }
+            const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(cars, null, 2))));
+            await fetch(jsonUrl, {
+                method: "PUT",
+                headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ message: "Suppression voiture", content: updatedContentBase64, sha: jsonData.sha })
+            });
 
-                const data = await res.json();
-                const reservations = JSON.parse(decodeUTF8(data.content));
-                
-                if (!Array.isArray(reservations) || reservations.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-gray-500">Aucune réservation trouvée.</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = reservations.map(r => `
-                    <tr class="border-b hover:bg-gray-50">
-                        <td class="p-3 font-bold text-gray-800">${r.nomlocation}</td>
-                        <td class="p-3 text-gray-600">${r.tel} <br><span class="text-xs text-gray-400">CIN: ${r.CIN}</span></td>
-                        <td class="p-3 font-mono text-xs">${r.id_devoiture}</td>
-                        <td class="p-3">${r["nombrede jour alloue"]} jour(s)</td>
-                        <td class="p-3 font-bold text-green-600">${r["avance20%"]} Ar</td>
-                        <td class="p-3 font-bold text-red-600">${r["montant resta impaye"]} Ar</td>
-                    </tr>
-                `).join('');
-            } catch (err) {
-                console.error(err);
-                tbody.innerHTML = '<tr><td colspan="6" class="p-3 text-center text-red-500">Erreur lors du décodage de resevation.json.</td></tr>';
-            }
+            fetchCarsAdmin();
         }
 
-        fetchReservations();
+        fetchCarsAdmin().then(cleanAndFetchReservations);
     </script>
 </body>
 </html>
