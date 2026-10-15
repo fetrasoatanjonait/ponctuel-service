@@ -90,7 +90,7 @@
                             <th class="p-3">Locataire</th>
                             <th class="p-3">Contact</th>
                             <th class="p-3">Voiture</th>
-                            <th class="p-3">Période</th>
+                            <th class="p-3">Période / Type</th>
                             <th class="p-3">Montants</th>
                             <th class="p-3">Statut</th>
                             <th class="p-3">Actions</th>
@@ -119,7 +119,19 @@
                 <input type="text" id="nom" placeholder="Nom du véhicule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                 <input type="text" id="matricule" placeholder="Matricule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                 <input type="text" id="type" placeholder="Type (SUV, Berline...)" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
-                <input type="number" id="prix" placeholder="Prix par jour (Ar)" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                
+                <!-- Deux types de prix -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1">Prix Trajet Court (Ar/j)</label>
+                        <input type="number" id="prix" placeholder="ex: 150000" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-500 font-bold mb-1">Prix Long Trajet (Ar/j)</label>
+                        <input type="number" id="prix-long" placeholder="ex: 200000" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
+                    </div>
+                </div>
+
                 <textarea id="description" placeholder="Description du véhicule" required class="border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 md:col-span-2"></textarea>
                 
                 <div class="md:col-span-2">
@@ -148,7 +160,7 @@
                             <th class="p-3">Véhicule</th>
                             <th class="p-3">Matricule</th>
                             <th class="p-3">État</th>
-                            <th class="p-3">Prix / Jour</th>
+                            <th class="p-3">Tarifs (Court / Long)</th>
                             <th class="p-3">Actions</th>
                         </tr>
                     </thead>
@@ -163,11 +175,10 @@
     <script>
         const REPO_OWNER = "fetrasoatanjonait";
         const REPO_NAME = "ponctuel-service";
-        const GITHUB_PAT = "ghp_"+"8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
+        const GITHUB_PAT = "ghp_" + "8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
 
         let allCarsList = [];
 
-        // Fonctions pour gérer le spinner de chargement
         function showSpinner(text = "Chargement en cours...") {
             document.getElementById('spinner-text').innerText = text;
             document.getElementById('global-spinner').classList.remove('hidden');
@@ -177,7 +188,6 @@
             document.getElementById('global-spinner').classList.add('hidden');
         }
 
-        // Fonction pour gérer le changement d'onglet
         function switchTab(tab) {
             const secReservations = document.getElementById('section-reservations');
             const secCars = document.getElementById('section-cars');
@@ -294,6 +304,7 @@
                 const car = allCarsList.find(c => c.id === r.id_devoiture);
                 const carName = car ? car.nom : `ID: ${r.id_devoiture}`;
                 const status = r.statut || "en_attente";
+                const trajetType = r.type_trajet === 'long' ? '<span class="text-indigo-600 font-bold">Long Trajet</span>' : '<span class="text-blue-600 font-bold">Trajet Court</span>';
 
                 let statusBadge = `<span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-bold text-[10px]">En attente</span>`;
                 if (status === "validee") statusBadge = `<span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full font-bold text-[10px]">Validée</span>`;
@@ -306,7 +317,7 @@
                         <td class="p-3 font-semibold text-slate-700">${carName}</td>
                         <td class="p-3 text-slate-500">
                             ${r.date_debut || 'N/A'} au ${r.date_fin || 'N/A'}<br>
-                            <span class="font-bold text-slate-700">(${r["nombrede jour alloue"]} j)</span>
+                            <span class="font-bold text-slate-700">(${r["nombrede jour alloue"]} j)</span> - ${trajetType}
                         </td>
                         <td class="p-3">
                             Avance: <b>${(parseFloat(r["avance20%"])||0).toLocaleString()} Ar</b><br>
@@ -342,6 +353,8 @@
                     const photos = Array.isArray(c.photos) ? c.photos : (c.photo ? [c.photo] : []);
                     const mainPhoto = photos[0] || 'https://via.placeholder.com/60';
                     const isReserved = c.etat === "reserve";
+                    const prixCourt = parseFloat(c.prix) || 0;
+                    const prixLong = parseFloat(c.prix_long) || (prixCourt * 1.25);
 
                     return `
                         <tr class="border-b border-slate-100 hover:bg-slate-50">
@@ -353,7 +366,10 @@
                                     ${isReserved ? '🚫 RÉSERVÉ' : '✅ DISPONIBLE'}
                                 </span>
                             </td>
-                            <td class="p-3 font-semibold text-blue-600">${c.prix.toLocaleString()} Ar</td>
+                            <td class="p-3">
+                                <span class="text-blue-600 font-bold">Court : ${prixCourt.toLocaleString()} Ar</span><br>
+                                <span class="text-indigo-600 font-bold">Long : ${prixLong.toLocaleString()} Ar</span>
+                            </td>
                             <td class="p-3 space-x-1">
                                 <button onclick="prepareEditCar('${c.id}')" class="bg-amber-500 text-white px-2 py-1 rounded-lg font-bold">Modifier</button>
                                 <button onclick="deleteCar('${c.id}')" class="bg-rose-600 text-white px-2 py-1 rounded-lg font-bold">Supprimer</button>
@@ -458,14 +474,14 @@
             const car = allCarsList.find(c => c.id === id);
             if (!car) return;
 
-            // Basculer automatiquement sur l'onglet de gestion des véhicules
             switchTab('cars');
 
             document.getElementById('edit-car-id').value = car.id;
             document.getElementById('nom').value = car.nom;
             document.getElementById('matricule').value = car.matricule;
             document.getElementById('type').value = car.type;
-            document.getElementById('prix').value = car.prix;
+            document.getElementById('prix').value = car.prix || 0;
+            document.getElementById('prix-long').value = car.prix_long || (car.prix * 1.25);
             document.getElementById('description').value = car.description;
 
             document.getElementById('form-title').innerText = "Modifier : " + car.nom;
@@ -516,13 +532,17 @@
                 const jsonData = await jsonRes.json();
                 let cars = JSON.parse(decodeUTF8(jsonData.content));
 
+                const prixCourtVal = parseFloat(document.getElementById('prix').value);
+                const prixLongVal = parseFloat(document.getElementById('prix-long').value);
+
                 if (isEditing) {
                     cars = cars.map(car => car.id === editId ? {
                         ...car,
                         nom: document.getElementById('nom').value,
                         matricule: document.getElementById('matricule').value,
                         type: document.getElementById('type').value,
-                        prix: parseFloat(document.getElementById('prix').value),
+                        prix: prixCourtVal,
+                        prix_long: prixLongVal,
                         description: document.getElementById('description').value,
                         photos: uploadedPhotoUrls.length > 0 ? uploadedPhotoUrls : car.photos
                     } : car);
@@ -532,7 +552,8 @@
                         nom: document.getElementById('nom').value,
                         matricule: document.getElementById('matricule').value,
                         type: document.getElementById('type').value,
-                        prix: parseFloat(document.getElementById('prix').value),
+                        prix: prixCourtVal,
+                        prix_long: prixLongVal,
                         description: document.getElementById('description').value,
                         photos: uploadedPhotoUrls,
                         etat: "disponible"
