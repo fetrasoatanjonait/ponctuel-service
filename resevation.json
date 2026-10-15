@@ -1,19 +1,5 @@
 [
   {
-    "id": "1792051546804",
-    "id_devoiture": "1790058526309",
-    "date_debut": "2026-10-15",
-    "date_fin": "2026-10-16",
-    "nombrede jour alloue": 1,
-    "avance20%": 2400,
-    "montanttotalPaye": 0,
-    "montant resta impaye": 9600,
-    "nomlocation": "dfs",
-    "tel": "dsf",
-    "CIN": "dsfdsf",
-    "statut": "validee"
-  },
-  {
     "id": "1792052314761",
     "id_devoiture": "1790058463007",
     "type_duree": "heure",
