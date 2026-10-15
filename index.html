@@ -45,7 +45,7 @@
 
                     <!-- VOTRE IMAGE INTÉGRÉE DANS LE CADRE -->
                     <image href="https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/logo.jpg" 
-                           x="6" y="6" width="150" height="150" 
+                           x="6" y="6" width="98" height="98" 
                            preserveAspectRatio="xMidYMid slice" 
                            clip-path="url(#logoClip)" />
 
@@ -70,12 +70,22 @@
 </nav>
 
     <!-- En-tête Hero -->
-    <header class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-14 px-4 relative overflow-hidden">
+  <!-- En-tête Hero avec Image de Fond -->
+    <header class="relative bg-slate-900 text-white py-20 px-4 overflow-hidden bg-cover bg-center" style="background-image: url('https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/logo1.jpg');">
+        
+        <!-- Voile sombre semi-transparent pour garder le texte lisible par-dessus l'image -->
+        <div class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px]"></div>
+
+        <!-- Effet de motif subtil par-dessus -->
         <div class="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+
+        <!-- Contenu -->
         <div class="container mx-auto text-center relative z-10 max-w-3xl">
-            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-3">TARIFS DE TRANSPORT : COURTES ET LONGUES DISTANCES</span>
-            <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-3">Réservez votre véhicule en quelques clics</h2>
-            <p class="text-slate-300 text-base md:text-lg">Choisissez votre formule de trajet selon votre destination.</p>
+            <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-semibold px-3.5 py-1 rounded-full uppercase tracking-widest inline-block mb-3 shadow-sm">
+                TARIFS DE TRANSPORT : COURTES ET LONGUES DISTANCES
+            </span>
+            <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-3 drop-shadow-md">Réservez votre véhicule en quelques clics</h2>
+            <p class="text-slate-200 text-base md:text-lg drop-shadow">Choisissez votre formule de trajet selon votre destination.</p>
         </div>
     </header>
 
