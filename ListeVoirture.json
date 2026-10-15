@@ -1,21 +1,5 @@
 [
   {
-    "id": "1792057731784",
-    "nom": "Fetrasoa",
-    "matricule": "VF",
-    "type": "fdgg",
-    "prix": 30000,
-    "prix_long": 350000,
-    "description": "Puis , apres l'echange avec le PO  pour les remarques et pour pouvoir les résoudre  PR #12811donc j'ai traivaillé la desus et  on a casiment fini la mise en place de warning sur le champ, où les utilisateur saisie le ",
-    "photos": [
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057716074_0_images__1_.jpg",
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057718315_1_images__2_.jpg",
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057719991_2_images__3_.jpg",
-      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057721841_3_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
-    ],
-    "etat": "disponible"
-  },
-  {
     "id": "1792057796291",
     "nom": "PONCTUAL",
     "matricule": "VF",
