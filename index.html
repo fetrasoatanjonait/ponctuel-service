@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ponctual Services - Location de Voitures</title>
+    <title>Ponctuel Service - Location de Voitures</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
+    <style> body { font-family: 'Inter', sans-serif; } </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col relative">
+
+    <!-- SPINNER DE CHARGEMENT GLOBAL -->
+    <div id="global-spinner" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center text-white gap-3 transition-all">
+        <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+        <p id="spinner-text" class="text-sm font-bold tracking-wide bg-slate-800/80 px-4 py-2 rounded-xl border border-white/10">Chargement en cours...</p>
+    </div>
 
     <!-- Navigation -->
     <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg border-b border-slate-800">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- Logo avec icône -->
             <a href="#" class="flex items-center gap-3 group">
                 <div class="bg-blue-600 p-2.5 rounded-xl text-white group-hover:bg-blue-500 transition shadow-md shadow-blue-900/40">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,12 +26,12 @@
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">PONCTUAL</span>
-                    <span class="text-xs font-semibold text-blue-400 block tracking-wider uppercase -mt-1">Services Auto</span>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">PONCTUEL</span>
+                    <span class="text-xs font-semibold text-blue-400 block tracking-wider uppercase -mt-1">Service Auto</span>
                 </div>
             </a>
 
-            <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+            <a href="admin.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-2">
                 <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                 Espace Admin
             </a>
@@ -41,41 +44,28 @@
         <div class="container mx-auto text-center relative z-10 max-w-3xl">
             <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-3">Location Simple & Rapide</span>
             <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-3">Réservez votre véhicule en quelques clics</h2>
-            <p class="text-slate-300 text-base md:text-lg">Consultez notre parc automobile, filtrez selon vos besoins et réservez instantanément.</p>
+            <p class="text-slate-300 text-base md:text-lg">Consultez notre parc automobile, vérifiez les périodes disponibles et réservez instantanément.</p>
         </div>
     </header>
 
     <!-- Section Principale & Barre de Recherche -->
-    <main class="container mx-auto py-10 px-4 flex-1">
+    <main class="container mx-auto py-10 px-4 flex-1 max-w-7xl">
         
-        <!-- Barre de recherche et Filtres -->
-        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-8 max-w-5xl mx-auto space-y-4">
-            <div class="flex flex-col md:flex-row gap-3">
-                
-                <!-- Champ de recherche texte -->
-                <div class="relative flex-1">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                    <input type="text" id="search-input" onkeyup="filterCars()" placeholder="Rechercher par nom, marque, matricule ou type..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
+        <!-- Barre de recherche -->
+        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-8 max-w-4xl mx-auto">
+            <div class="relative flex-1">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
-
-                <!-- Filtres rapides par statut -->
-                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold text-slate-600">
-                    <button onclick="setStatusFilter('all')" id="filter-btn-all" class="filter-status-btn bg-white text-slate-900 shadow-sm px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Tous</button>
-                    <button onclick="setStatusFilter('disponible')" id="filter-btn-disponible" class="filter-status-btn hover:text-slate-900 px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Disponibles</button>
-                    <button onclick="setStatusFilter('reserve')" id="filter-btn-reserve" class="filter-status-btn hover:text-slate-900 px-3.5 py-2 rounded-lg transition flex-1 md:flex-none">Réservés</button>
-                </div>
-
+                <input type="text" id="search-input" onkeyup="filterCars()" placeholder="Rechercher par nom, marque, matricule ou type..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition text-sm">
             </div>
-            <div class="flex justify-between items-center text-xs text-slate-500 px-1 pt-1">
-                <span>Résultats : <strong id="car-count" class="text-slate-800">0</strong> véhicule(s)</span>
-                <span id="search-indicator" class="hidden text-blue-600 font-medium">Recherche active...</span>
+            <div class="flex justify-between items-center text-xs text-slate-500 px-1 pt-3">
+                <span>Véhicules affichés : <strong id="car-count" class="text-slate-800">0</strong></span>
             </div>
         </div>
 
         <!-- Grille des voitures -->
-        <div id="cars-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        <div id="cars-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <p class="text-slate-400 col-span-3 text-center py-10">Chargement du parc automobile...</p>
         </div>
     </main>
@@ -83,7 +73,7 @@
     <!-- Footer -->
     <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
         <div class="container mx-auto px-4">
-            <p>&copy; 2026 Ponctual Services Auto. Tous droits réservés.</p>
+            <p>&copy; 2026 Ponctuel Service Auto. Tous droits réservés.</p>
         </div>
     </footer>
 
@@ -92,10 +82,7 @@
         <div class="bg-white rounded-2xl p-6 max-w-3xl w-full shadow-2xl relative border border-slate-100">
             <button onclick="closeGalleryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 bg-slate-100 p-2 rounded-full transition">&times;</button>
             <h3 class="text-xl font-bold mb-4 text-slate-800" id="gallery-car-title">Galerie photos</h3>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1" id="gallery-images-container">
-            </div>
-
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-h-[60vh] overflow-y-auto p-1" id="gallery-images-container"></div>
             <div class="mt-6 flex justify-end">
                 <button onclick="closeGalleryModal()" class="px-5 py-2.5 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-700 transition">Fermer</button>
             </div>
@@ -117,16 +104,16 @@
                 <div class="space-y-3 mb-4">
                     <div>
                         <label class="block text-slate-700 text-xs font-bold mb-1">Nom du Locataire</label>
-                        <input type="text" id="nomlocation" placeholder="ex: Jean Rakoto" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                        <input type="text" id="nomlocation" placeholder="ex: Jean Rakoto" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-slate-700 text-xs font-bold mb-1">Téléphone</label>
-                            <input type="tel" id="tel" placeholder="034 00 000 00" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                            <input type="tel" id="tel" placeholder="034 00 000 00" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                         </div>
                         <div>
                             <label class="block text-slate-700 text-xs font-bold mb-1">Numéro CIN</label>
-                            <input type="text" id="cin" placeholder="101 211 xxx xxx" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none">
+                            <input type="text" id="cin" placeholder="101 211 xxx xxx" required class="w-full border border-slate-200 p-2.5 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500">
                         </div>
                     </div>
 
@@ -167,53 +154,58 @@
         const API_RESERVATION_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
 
         let allCars = [];
-        let currentStatusFilter = 'all';
+        let allReservations = [];
+
+        function showSpinner(text = "Chargement en cours...") {
+            document.getElementById('spinner-text').innerText = text;
+            document.getElementById('global-spinner').classList.remove('hidden');
+        }
+
+        function hideSpinner() {
+            document.getElementById('global-spinner').classList.add('hidden');
+        }
 
         function decodeUTF8(str) {
             return decodeURIComponent(escape(atob(str)));
         }
 
-        async function fetchCars() {
+        async function initData() {
+            showSpinner("Chargement des données...");
             try {
-                const res = await fetch(CARS_URL + "?nocache=" + Date.now());
-                if (!res.ok) throw new Error("Fichier non trouvé");
-                allCars = await res.json();
+                // 1. Charger les voitures
+                const resCars = await fetch(CARS_URL + "?nocache=" + Date.now());
+                if (resCars.ok) {
+                    allCars = await resCars.json();
+                }
+
+                // 2. Charger les réservations pour connaître les indisponibilités
+                const resRes = await fetch(API_RESERVATION_URL + "?nocache=" + Date.now(), {
+                    headers: { "Authorization": `token ${GITHUB_PAT}` }
+                });
+                if (resRes.ok) {
+                    const resData = await resRes.json();
+                    allReservations = JSON.parse(decodeUTF8(resData.content));
+                }
+
                 filterCars();
             } catch (err) {
                 console.error(err);
-                document.getElementById('cars-container').innerHTML = '<p class="text-rose-500 col-span-3 text-center py-10 font-medium">Erreur lors du chargement du parc automobile.</p>';
+                document.getElementById('cars-container').innerHTML = '<p class="text-rose-500 col-span-3 text-center py-10 font-medium">Erreur lors du chargement des données.</p>';
+            } finally {
+                hideSpinner();
             }
-        }
-
-        function setStatusFilter(status) {
-            currentStatusFilter = status;
-            document.querySelectorAll('.filter-status-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
-                btn.classList.add('hover:text-slate-900');
-            });
-            const activeBtn = document.getElementById(`filter-btn-${status}`);
-            if (activeBtn) {
-                activeBtn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
-            }
-            filterCars();
         }
 
         function filterCars() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             
             const filtered = allCars.filter(car => {
-                const matchesQuery = 
+                return (
                     (car.nom && car.nom.toLowerCase().includes(query)) ||
                     (car.type && car.type.toLowerCase().includes(query)) ||
                     (car.matricule && car.matricule.toLowerCase().includes(query)) ||
-                    (car.description && car.description.toLowerCase().includes(query));
-
-                const matchesStatus = 
-                    currentStatusFilter === 'all' || 
-                    (currentStatusFilter === 'disponible' && car.etat !== 'reserve') ||
-                    (currentStatusFilter === 'reserve' && car.etat === 'reserve');
-
-                return matchesQuery && matchesStatus;
+                    (car.description && car.description.toLowerCase().includes(query))
+                );
             });
 
             document.getElementById('car-count').innerText = filtered.length;
@@ -225,7 +217,6 @@
             if (!cars || cars.length === 0) {
                 container.innerHTML = `
                     <div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
-                        <svg class="w-12 h-12 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         <p class="text-slate-500 font-medium">Aucun véhicule ne correspond à votre recherche.</p>
                     </div>
                 `;
@@ -235,22 +226,24 @@
             container.innerHTML = cars.map(car => {
                 const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
                 const mainPhoto = photosList[0] || 'https://via.placeholder.com/400x250?text=Pas+de+photo';
-                const isReserved = car.etat === "reserve";
+
+                // Trouver les réservations validées pour cette voiture
+                const carReservations = allReservations.filter(r => r.id_devoiture === car.id && r.statut === "validee");
+                
+                let availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">✅ DISPONIBLE</span>`;
+                let messageHtml = `<p class="text-xs text-emerald-600 font-semibold mb-3">Disponible immédiatement</p>`;
+
+                if (carReservations.length > 0) {
+                    const periodsText = carReservations.map(r => `du ${r.date_debut} au ${r.date_fin}`).join(', ');
+                    availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">⚠️ RÉSERVÉ PAR PÉRIODE</span>`;
+                    messageHtml = `<p class="text-xs text-amber-600 font-semibold mb-3">Déjà réservé : ${periodsText}. Choisissez une autre période libre.</p>`;
+                }
 
                 return `
-                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative ${isReserved ? 'opacity-70 grayscale-[30%]' : ''}">
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative">
                     
-                    <!-- Statut Badge -->
                     <div class="absolute top-3 left-3 z-10">
-                        ${isReserved ? `
-                            <span class="bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                                🚫 Réservé
-                            </span>
-                        ` : `
-                            <span class="bg-emerald-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                                ✅ Disponible
-                            </span>
-                        `}
+                        ${availabilityHtml}
                     </div>
 
                     <div class="relative bg-slate-100 group">
@@ -267,7 +260,10 @@
                                 <span class="text-xs text-slate-400 font-mono">${car.matricule}</span>
                             </div>
                             <h4 class="text-lg font-bold text-slate-800 mt-1">${car.nom}</h4>
-                            <p class="text-slate-500 text-xs mt-1 mb-4 line-clamp-2">${car.description}</p>
+                            <p class="text-slate-500 text-xs mt-1 mb-2 line-clamp-2">${car.description}</p>
+                            
+                            <!-- Affichage des dates non disponibles -->
+                            ${messageHtml}
                         </div>
 
                         <div class="pt-3 border-t border-slate-100">
@@ -280,16 +276,9 @@
                                 <button onclick="openGalleryModal('${car.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-semibold transition border border-slate-200/60">
                                     🖼️ Photos
                                 </button>
-                                
-                                ${isReserved ? `
-                                    <button disabled class="bg-slate-200 text-slate-400 py-2.5 rounded-xl text-xs font-semibold cursor-not-allowed">
-                                        Indisponible
-                                    </button>
-                                ` : `
-                                    <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition">
-                                        Réserver
-                                    </button>
-                                `}
+                                <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition">
+                                    Réserver
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -306,7 +295,7 @@
 
             const container = document.getElementById('gallery-images-container');
             if (photosList.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-6">Aucune photo disponible pour ce véhicule.</p>';
+                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-6">Aucune photo disponible.</p>';
             } else {
                 container.innerHTML = photosList.map(url => `
                     <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
@@ -373,65 +362,10 @@
 
             return jours;
         }
-// Permet de trouver les périodes où la voiture est déjà réservée (statut validée)
-function getCarAvailabilityInfo(carId, reservationsList) {
-    const carReservations = reservationsList.filter(r => r.id_devoiture === carId && r.statut === "validee");
 
-    if (carReservations.length === 0) {
-        return {
-            isReserved: false,
-            badgeHtml: `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">✅ DISPONIBLE</span>`,
-            messageHtml: `<p class="text-xs text-emerald-600 font-semibold mb-3">Disponible immédiatement</p>`
-        };
-    }
-
-    // Formatter les périodes de réservation existantes
-    let periodsText = carReservations.map(r => `du ${r.date_debut} au ${r.date_fin}`).join(', ');
-
-    return {
-        isReserved: true,
-        badgeHtml: `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">⚠️ DÉJÀ RÉSERVÉ</span>`,
-        messageHtml: `<p class="text-xs text-amber-600 font-semibold mb-3">Déjà réservé : ${periodsText}. Veuillez choisir une autre date.</p>`
-    };
-}function validateUserReservationDates(carId, startDate, endDate, reservationsList) {
-    const conflict = reservationsList.find(r => {
-        if (r.id_devoiture !== carId || r.statut !== "validee") return false;
-        // Vérification du chevauchement de dates
-        return (r.date_debut <= endDate && r.date_fin >= startDate);
-    });
-
-    if (conflict) {
-        alert(`Désolé ! Ce véhicule est déjà réservé du ${conflict.date_debut} au ${conflict.date_fin}. Veuillez choisir d'autres dates.`);
-        return false; // Bloque la réservation
-    }
-    return true; // Période libre
-}// Exemple dans votre boucle d'affichage des voitures :
-allCarsList.forEach(car => {
-    const availability = getCarAvailabilityInfo(car.id, reservationsList);
-
-    const carCardHTML = `
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-            <img src="${car.photos[0] || 'https://via.placeholder.com/150'}" class="h-40 w-full object-cover rounded-xl mb-3">
-            <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-base text-slate-800">${car.nom}</h3>
-                ${availability.badgeHtml}
-            </div>
-            <p class="text-xs text-slate-500 mb-2">${car.type} - ${car.matricule}</p>
-            
-            <!-- Message indiquant les dates non disponibles -->
-            ${availability.messageHtml}
-
-            <p class="text-sm font-black text-blue-600 mb-3">${car.prix.toLocaleString()} Ar / jour</p>
-
-            <button onclick="openReservationModal('${car.id}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition">
-                Réserver ce véhicule
-            </button>
-        </div>
-    `;
-    // Ajoutez ensuite carCardHTML dans votre conteneur HTML...
-});
         async function handleBooking(e) {
             e.preventDefault();
+            const carId = document.getElementById('modal-car-id').value;
             const dateDebut = document.getElementById('date-debut').value;
             const dateFin = document.getElementById('date-fin').value;
 
@@ -440,8 +374,20 @@ allCarsList.forEach(car => {
                 return;
             }
 
+            // Vérification de conflit avec les réservations validées existantes
+            const conflict = allReservations.find(r => {
+                if (r.id_devoiture !== carId || r.statut !== "validee") return false;
+                // Chevauchement : (Début_existant <= Fin_demandée) ET (Fin_existante >= Début_demandé)
+                return (r.date_debut <= dateFin && r.date_fin >= dateDebut);
+            });
+
+            if (conflict) {
+                alert(`Désolé ! Ce véhicule est déjà réservé du ${conflict.date_debut} au ${conflict.date_fin}. Veuillez choisir une autre période.`);
+                return;
+            }
+
+            showSpinner("Enregistrement de votre réservation...");
             const submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerText = "Traitement en cours...";
             submitBtn.disabled = true;
 
             try {
@@ -461,7 +407,7 @@ allCarsList.forEach(car => {
 
                 const newReservation = {
                     id: Date.now().toString(),
-                    id_devoiture: document.getElementById('modal-car-id').value,
+                    id_devoiture: carId,
                     date_debut: dateDebut,
                     date_fin: dateFin,
                     "nombrede jour alloue": jours,
@@ -493,16 +439,17 @@ allCarsList.forEach(car => {
 
                 alert("Votre demande a été transmise avec succès ! Elle sera traitée sous peu par notre équipe.");
                 closeModal();
+                initData();
             } catch (err) {
                 console.error(err);
                 alert("Erreur : " + err.message);
             } finally {
-                submitBtn.innerText = "Confirmer la demande";
+                hideSpinner();
                 submitBtn.disabled = false;
             }
         }
 
-        fetchCars();
+        initData();
     </script>
 </body>
 </html>
