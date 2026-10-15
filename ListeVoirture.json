@@ -13,5 +13,20 @@
       "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792083989881_2_inbound1081509551696133911.png"
     ],
     "etat": "disponible"
+  },
+  {
+    "id": "1792089896922",
+    "nom": "GRAND STAREX GLX ",
+    "matricule": "S 002",
+    "type": "MINIBUS ",
+    "prix": 150000,
+    "prix_long": 200000,
+    "description": "VÉHICULE NEUF, CONFORTABLE ET FAMILIAL. 12 PLACES ",
+    "photos": [
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792089869011_0_inbound2207409582229809792.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792089875511_1_inbound7852280281734242454.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792089879584_2_inbound3179817022027804317.jpg"
+    ],
+    "etat": "disponible"
   }
 ]
