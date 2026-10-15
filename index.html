@@ -284,11 +284,25 @@
                 let availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">✅ DISPONIBLE</span>`;
                 let messageHtml = `<p class="text-xs text-emerald-600 font-semibold mb-3">Disponible immédiatement</p>`;
 
-                if (carReservations.length > 0) {
-                    const periodsText = carReservations.map(r => r.type_duree === 'heure' ? `le ${r.date_debut} (${r.heure_debut} - ${r.heure_fin})` : `du ${r.date_debut} au ${r.date_fin}`).join(', ');
-                    availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">⚠️ RÉSERVÉ PAR PÉRIODE</span>`;
-                    messageHtml = `<p class="text-xs text-amber-600 font-semibold mb-3">Occupé : ${periodsText}.</br></p>`;
-                }
+              if (carReservations.length > 0) {
+    const periodsText = carReservations
+        .map(r =>
+            r.type_duree === 'heure'
+                ? `• le ${r.date_debut} (${r.heure_debut} - ${r.heure_fin})`
+                : `• du ${r.date_debut} au ${r.date_fin}`
+        )
+        .join('<br>');
+
+    availabilityHtml = `
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">
+            ⚠️ RÉSERVÉ PAR PÉRIODE
+        </span>`;
+
+    messageHtml = `
+        <p class="text-xs text-amber-600 font-semibold mb-3">
+            Occupé :<br>${periodsText}
+        </p>`;
+}
 
                 return `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between relative">
