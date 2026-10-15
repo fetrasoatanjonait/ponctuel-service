@@ -19,8 +19,8 @@
     "nom": "GRAND STAREX GLX",
     "matricule": "S 002",
     "type": "MINIBUS ",
-    "prix": 150,
-    "prix_long": 200,
+    "prix": 150000,
+    "prix_long": 200000,
     "description": "Véhicule neuf, confortable et familial. 12 places ",
     "photos": [
       "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792089415745_0_inbound571003197467793763.jpg",
