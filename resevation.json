@@ -1,19 +1,5 @@
 [
   {
-    "id": "1792051318471",
-    "id_devoiture": "1790058463007",
-    "date_debut": "2026-10-15",
-    "date_fin": "2026-10-16",
-    "nombrede jour alloue": 1,
-    "avance20%": 600,
-    "montanttotalPaye": 0,
-    "montant resta impaye": 2400,
-    "nomlocation": "fds",
-    "tel": "fddsf",
-    "CIN": "fdsf",
-    "statut": "validee"
-  },
-  {
     "id": "1792051536245",
     "id_devoiture": "1790058526309",
     "date_debut": "2026-10-15",
