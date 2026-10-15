@@ -373,7 +373,63 @@
 
             return jours;
         }
+// Permet de trouver les périodes où la voiture est déjà réservée (statut validée)
+function getCarAvailabilityInfo(carId, reservationsList) {
+    const carReservations = reservationsList.filter(r => r.id_devoiture === carId && r.statut === "validee");
 
+    if (carReservations.length === 0) {
+        return {
+            isReserved: false,
+            badgeHtml: `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">✅ DISPONIBLE</span>`,
+            messageHtml: `<p class="text-xs text-emerald-600 font-semibold mb-3">Disponible immédiatement</p>`
+        };
+    }
+
+    // Formatter les périodes de réservation existantes
+    let periodsText = carReservations.map(r => `du ${r.date_debut} au ${r.date_fin}`).join(', ');
+
+    return {
+        isReserved: true,
+        badgeHtml: `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">⚠️ DÉJÀ RÉSERVÉ</span>`,
+        messageHtml: `<p class="text-xs text-amber-600 font-semibold mb-3">Déjà réservé : ${periodsText}. Veuillez choisir une autre date.</p>`
+    };
+}function validateUserReservationDates(carId, startDate, endDate, reservationsList) {
+    const conflict = reservationsList.find(r => {
+        if (r.id_devoiture !== carId || r.statut !== "validee") return false;
+        // Vérification du chevauchement de dates
+        return (r.date_debut <= endDate && r.date_fin >= startDate);
+    });
+
+    if (conflict) {
+        alert(`Désolé ! Ce véhicule est déjà réservé du ${conflict.date_debut} au ${conflict.date_fin}. Veuillez choisir d'autres dates.`);
+        return false; // Bloque la réservation
+    }
+    return true; // Période libre
+}// Exemple dans votre boucle d'affichage des voitures :
+allCarsList.forEach(car => {
+    const availability = getCarAvailabilityInfo(car.id, reservationsList);
+
+    const carCardHTML = `
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <img src="${car.photos[0] || 'https://via.placeholder.com/150'}" class="h-40 w-full object-cover rounded-xl mb-3">
+            <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold text-base text-slate-800">${car.nom}</h3>
+                ${availability.badgeHtml}
+            </div>
+            <p class="text-xs text-slate-500 mb-2">${car.type} - ${car.matricule}</p>
+            
+            <!-- Message indiquant les dates non disponibles -->
+            ${availability.messageHtml}
+
+            <p class="text-sm font-black text-blue-600 mb-3">${car.prix.toLocaleString()} Ar / jour</p>
+
+            <button onclick="openReservationModal('${car.id}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl text-xs font-bold transition">
+                Réserver ce véhicule
+            </button>
+        </div>
+    `;
+    // Ajoutez ensuite carCardHTML dans votre conteneur HTML...
+});
         async function handleBooking(e) {
             e.preventDefault();
             const dateDebut = document.getElementById('date-debut').value;
