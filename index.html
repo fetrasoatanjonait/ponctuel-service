@@ -13,7 +13,7 @@
     <!-- SPINNER DE CHARGEMENT GLOBAL -->
     <div id="global-spinner" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center text-white gap-3 transition-all">
         <div class="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
-        <p id="spinner-text" class="text-sm font-bold tracking-wide bg-slate-800/80 px-4 py-2 rounded-xl border border-white/10">Chargement en cours...</p>
+        <p id="spinner-text" class="text-sm font-bold tracking-wide bg-slate-800/80 px-4 py-2 rounded-xl border border-white/10">Lancement de la réservation...</p>
     </div>
 
     <!-- Navigation -->
@@ -42,16 +42,14 @@
     <header class="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white py-14 px-4 relative overflow-hidden">
         <div class="absolute inset-0 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
         <div class="container mx-auto text-center relative z-10 max-w-3xl">
-            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-3">Location Simple & Rapide</span>
+            <span class="bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-widest inline-block mb-3">Location par heure ou par jour</span>
             <h2 class="text-3xl md:text-5xl font-black tracking-tight mb-3">Réservez votre véhicule en quelques clics</h2>
-            <p class="text-slate-300 text-base md:text-lg">Consultez notre parc automobile, vérifiez les périodes disponibles et réservez instantanément.</p>
+            <p class="text-slate-300 text-base md:text-lg">Choisissez une formule à l'heure ou à la journée selon vos besoins.</p>
         </div>
     </header>
 
-    <!-- Section Principale & Barre de Recherche -->
+    <!-- Section Principale & Recherche -->
     <main class="container mx-auto py-10 px-4 flex-1 max-w-7xl">
-        
-        <!-- Barre de recherche -->
         <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-200/80 mb-8 max-w-4xl mx-auto">
             <div class="relative flex-1">
                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -64,18 +62,10 @@
             </div>
         </div>
 
-        <!-- Grille des voitures -->
         <div id="cars-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <p class="text-slate-400 col-span-3 text-center py-10">Chargement du parc automobile...</p>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 text-center text-xs">
-        <div class="container mx-auto px-4">
-            <p>&copy; 2026 Ponctuel Service Auto. Tous droits réservés.</p>
-        </div>
-    </footer>
 
     <!-- Modal Galerie Photos -->
     <div id="gallery-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
@@ -89,9 +79,9 @@
         </div>
     </div>
 
-    <!-- Modal de Réservation -->
+    <!-- Modal de Réservation (Jour / Heure) -->
     <div id="booking-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center mb-4 pb-3 border-b">
                 <h3 class="text-lg font-bold text-slate-800" id="modal-car-title">Réserver un véhicule</h3>
                 <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
@@ -117,29 +107,58 @@
                         </div>
                     </div>
 
-                    <!-- Plage de dates -->
-                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                    <!-- Choix du Type de Location -->
+                    <div>
+                        <label class="block text-slate-700 text-xs font-bold mb-1">Formule de réservation</label>
+                        <select id="type-duree" onchange="toggleDureeFields()" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm bg-slate-50 font-semibold focus:ring-2 focus:ring-blue-500/20">
+                            <option value="jour">Par Jour(s)</option>
+                            <option value="heure">Par Heure(s)</option>
+                        </select>
+                    </div>
+
+                    <!-- Formulaire PAR JOUR -->
+                    <div id="fields-jour" class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
                         <div>
                             <label class="block text-slate-700 text-xs font-bold mb-1">Date de début</label>
-                            <input type="date" id="date-debut" required onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                            <input type="date" id="date-debut" onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
                         </div>
                         <div>
                             <label class="block text-slate-700 text-xs font-bold mb-1">Date de fin</label>
-                            <input type="date" id="date-fin" required onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                            <input type="date" id="date-fin" onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                        </div>
+                    </div>
+
+                    <!-- Formulaire PAR HEURE -->
+                    <div id="fields-heure" class="hidden space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+                        <div>
+                            <label class="block text-slate-700 text-xs font-bold mb-1">Date de réservation</label>
+                            <input type="date" id="heure-date" onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-slate-700 text-xs font-bold mb-1">Heure de début</label>
+                                <input type="time" id="heure-debut" onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-slate-700 text-xs font-bold mb-1">Heure de fin</label>
+                                <input type="time" id="heure-fin" onchange="calculatePrice()" class="w-full border border-slate-200 p-2 rounded-lg text-xs bg-white">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="mb-5 p-3.5 bg-blue-50/60 border border-blue-100 rounded-xl text-xs space-y-1.5">
-                    <p class="flex justify-between text-slate-600"><span>Durée :</span> <strong id="duree-jours" class="text-slate-800">0 jour(s)</strong></p>
+                    <p class="flex justify-between text-slate-600"><span>Durée :</span> <strong id="duree-affichee" class="text-slate-800">0 jour(s)</strong></p>
                     <p class="flex justify-between text-slate-600"><span>Montant Total :</span> <strong id="total-price" class="text-slate-800">0 Ar</strong></p>
-                    <p class="flex justify-between text-blue-700 font-medium"><span>Avance requise (20%) :</span> <strong id="avance-price">0 Ar</strong></p>
-                    <p class="flex justify-between text-amber-700 font-medium"><span>Reste à payer :</span> <strong id="reste-price">0 Ar</strong></p>
+                    <p class="flex justify-between text-green-700 font-medium"><span>Avance requise (20%) :</span> <strong id="avance-price">0 Ar</strong></p>
+                    <p class="flex justify-between text-blue-700 font-medium"><span>Reste à payer :</span> <strong id="reste-price">0 Ar</strong></p>
                 </div>
 
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="closeModal()" class="px-4 py-2.5 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-50">Annuler</button>
-                    <button type="submit" id="submit-btn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition">Confirmer la demande</button>
+                    <button type="submit" id="submit-btn" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition flex items-center justify-center gap-2">
+                        <span id="submit-btn-text">Confirmer la demande</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -150,13 +169,14 @@
         const REPO_NAME = "ponctuel-service";
         const GITHUB_PAT = "ghp_"+"8Kpym4wugGDgGaL24qyfvowPODrJBv3A09Dz";
 
+
         const CARS_URL = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/ListeVoirture.json`;
         const API_RESERVATION_URL = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/resevation.json`;
 
         let allCars = [];
         let allReservations = [];
 
-        function showSpinner(text = "Chargement en cours...") {
+        function showSpinner(text = "Traitement de votre demande...") {
             document.getElementById('spinner-text').innerText = text;
             document.getElementById('global-spinner').classList.remove('hidden');
         }
@@ -172,13 +192,9 @@
         async function initData() {
             showSpinner("Chargement des données...");
             try {
-                // 1. Charger les voitures
                 const resCars = await fetch(CARS_URL + "?nocache=" + Date.now());
-                if (resCars.ok) {
-                    allCars = await resCars.json();
-                }
+                if (resCars.ok) allCars = await resCars.json();
 
-                // 2. Charger les réservations pour connaître les indisponibilités
                 const resRes = await fetch(API_RESERVATION_URL + "?nocache=" + Date.now(), {
                     headers: { "Authorization": `token ${GITHUB_PAT}` }
                 });
@@ -190,7 +206,6 @@
                 filterCars();
             } catch (err) {
                 console.error(err);
-                document.getElementById('cars-container').innerHTML = '<p class="text-rose-500 col-span-3 text-center py-10 font-medium">Erreur lors du chargement des données.</p>';
             } finally {
                 hideSpinner();
             }
@@ -198,16 +213,12 @@
 
         function filterCars() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
-            
-            const filtered = allCars.filter(car => {
-                return (
-                    (car.nom && car.nom.toLowerCase().includes(query)) ||
-                    (car.type && car.type.toLowerCase().includes(query)) ||
-                    (car.matricule && car.matricule.toLowerCase().includes(query)) ||
-                    (car.description && car.description.toLowerCase().includes(query))
-                );
-            });
-
+            const filtered = allCars.filter(car => 
+                (car.nom && car.nom.toLowerCase().includes(query)) ||
+                (car.type && car.type.toLowerCase().includes(query)) ||
+                (car.matricule && car.matricule.toLowerCase().includes(query)) ||
+                (car.description && car.description.toLowerCase().includes(query))
+            );
             document.getElementById('car-count').innerText = filtered.length;
             renderCars(filtered);
         }
@@ -215,11 +226,7 @@
         function renderCars(cars) {
             const container = document.getElementById('cars-container');
             if (!cars || cars.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
-                        <p class="text-slate-500 font-medium">Aucun véhicule ne correspond à votre recherche.</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="col-span-3 text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200"><p class="text-slate-500 font-medium">Aucun véhicule trouvé.</p></div>`;
                 return;
             }
 
@@ -227,32 +234,23 @@
                 const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
                 const mainPhoto = photosList[0] || 'https://via.placeholder.com/400x250?text=Pas+de+photo';
 
-                // Trouver les réservations validées pour cette voiture
                 const carReservations = allReservations.filter(r => r.id_devoiture === car.id && r.statut === "validee");
-                
                 let availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800">✅ DISPONIBLE</span>`;
                 let messageHtml = `<p class="text-xs text-emerald-600 font-semibold mb-3">Disponible immédiatement</p>`;
 
                 if (carReservations.length > 0) {
-                    const periodsText = carReservations.map(r => `du ${r.date_debut} au ${r.date_fin}`).join(', ');
+                    const periodsText = carReservations.map(r => r.type_duree === 'heure' ? `le ${r.date_debut} (${r.heure_debut} - ${r.heure_fin})` : `du ${r.date_debut} au ${r.date_fin}`).join(', ');
                     availabilityHtml = `<span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-amber-100 text-amber-800">⚠️ RÉSERVÉ PAR PÉRIODE</span>`;
-                    messageHtml = `<p class="text-xs text-amber-600 font-semibold mb-3">Déjà réservé : ${periodsText}. Choisissez une autre période libre.</p>`;
+                    messageHtml = `<p class="text-xs text-amber-600 font-semibold mb-3">Occupé : ${periodsText}.</p>`;
                 }
 
                 return `
-                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition-all duration-200 flex flex-col justify-between relative">
-                    
-                    <div class="absolute top-3 left-3 z-10">
-                        ${availabilityHtml}
-                    </div>
-
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200/80 hover:shadow-md transition flex flex-col justify-between relative">
+                    <div class="absolute top-3 left-3 z-10">${availabilityHtml}</div>
                     <div class="relative bg-slate-100 group">
                         <img src="${mainPhoto}" alt="${car.nom}" class="h-48 w-full object-cover group-hover:scale-105 transition duration-300">
-                        <span class="absolute bottom-2 right-2 bg-slate-900/70 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-lg font-medium">
-                            📷 ${photosList.length} photo(s)
-                        </span>
+                        <span class="absolute bottom-2 right-2 bg-slate-900/70 backdrop-blur-sm text-white text-[11px] px-2.5 py-1 rounded-lg font-medium">📷 ${photosList.length} photo(s)</span>
                     </div>
-
                     <div class="p-5 flex-1 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-start gap-2 mb-1">
@@ -261,56 +259,33 @@
                             </div>
                             <h4 class="text-lg font-bold text-slate-800 mt-1">${car.nom}</h4>
                             <p class="text-slate-500 text-xs mt-1 mb-2 line-clamp-2">${car.description}</p>
-                            
-                            <!-- Affichage des dates non disponibles -->
                             ${messageHtml}
                         </div>
-
                         <div class="pt-3 border-t border-slate-100">
                             <div class="flex justify-between items-baseline mb-4">
                                 <span class="text-xs text-slate-400">Tarif location</span>
                                 <p class="text-blue-600 font-black text-xl">${car.prix.toLocaleString()} <span class="text-xs font-normal text-slate-500">Ar / jour</span></p>
                             </div>
-
                             <div class="grid grid-cols-2 gap-2">
-                                <button onclick="openGalleryModal('${car.id}')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-xs font-semibold transition border border-slate-200/60">
-                                    🖼️ Photos
-                                </button>
-                                <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm transition">
-                                    Réserver
-                                </button>
+                                <button onclick="openGalleryModal('${car.id}')" class="bg-slate-100 text-slate-700 py-2.5 rounded-xl text-xs font-semibold border">🖼️ Photos</button>
+                                <button onclick="openModal('${car.id}', '${car.nom}', ${car.prix})" class="bg-blue-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-sm">Réserver</button>
                             </div>
                         </div>
                     </div>
-                </div>
-            `}).join('');
+                </div>`;
+            }).join('');
         }
 
-        function openGalleryModal(carId) {
-            const car = allCars.find(c => c.id === carId);
-            if (!car) return;
-
-            document.getElementById('gallery-car-title').innerText = "Photos : " + car.nom;
-            const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
-
-            const container = document.getElementById('gallery-images-container');
-            if (photosList.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center py-6">Aucune photo disponible.</p>';
+        function toggleDureeFields() {
+            const type = document.getElementById('type-duree').value;
+            if (type === 'jour') {
+                document.getElementById('fields-jour').classList.remove('hidden');
+                document.getElementById('fields-heure').classList.add('hidden');
             } else {
-                container.innerHTML = photosList.map(url => `
-                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
-                        <a href="${url}" target="_blank">
-                            <img src="${url}" class="h-36 w-full object-cover hover:scale-105 transition duration-200" alt="Photo véhicule">
-                        </a>
-                    </div>
-                `).join('');
+                document.getElementById('fields-heure').classList.remove('hidden');
+                document.getElementById('fields-jour').classList.add('hidden');
             }
-
-            document.getElementById('gallery-modal').classList.remove('hidden');
-        }
-
-        function closeGalleryModal() {
-            document.getElementById('gallery-modal').classList.add('hidden');
+            calculatePrice();
         }
 
         function openModal(id, nom, prix) {
@@ -321,13 +296,19 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('date-debut').min = today;
             document.getElementById('date-debut').value = today;
+            document.getElementById('heure-date').min = today;
+            document.getElementById('heure-date').value = today;
             
             const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
             document.getElementById('date-fin').min = today;
             document.getElementById('date-fin').value = tomorrow;
 
+            document.getElementById('heure-debut').value = "08:00";
+            document.getElementById('heure-fin').value = "12:00";
+
+            document.getElementById('type-duree').value = "jour";
+            toggleDureeFields();
             document.getElementById('booking-modal').classList.remove('hidden');
-            calculatePrice();
         }
 
         function closeModal() {
@@ -336,84 +317,103 @@
         }
 
         function calculatePrice() {
-            const dateDebut = new Date(document.getElementById('date-debut').value);
-            const dateFin = new Date(document.getElementById('date-fin').value);
+            const type = document.getElementById('type-duree').value;
             const prixJour = parseFloat(document.getElementById('modal-car-price').value) || 0;
+            let total = 0;
 
-            if (isNaN(dateDebut.getTime()) || isNaN(dateFin.getTime()) || dateFin <= dateDebut) {
-                document.getElementById('duree-jours').innerText = "0 jour";
-                document.getElementById('total-price').innerText = "0 Ar";
-                document.getElementById('avance-price').innerText = "0 Ar";
-                document.getElementById('reste-price').innerText = "0 Ar";
-                return 0;
+            if (type === 'jour') {
+                const dateDebut = new Date(document.getElementById('date-debut').value);
+                const dateFin = new Date(document.getElementById('date-fin').value);
+                if (!isNaN(dateDebut) && !isNaN(dateFin) && dateFin > dateDebut) {
+                    const jours = Math.ceil(Math.abs(dateFin - dateDebut) / (1000 * 60 * 60 * 24));
+                    total = prixJour * jours;
+                    document.getElementById('duree-affichee').innerText = jours + " jour(s)";
+                } else {
+                    document.getElementById('duree-affichee').innerText = "0 jour";
+                }
+            } else {
+                const hDeb = document.getElementById('heure-debut').value;
+                const hFin = document.getElementById('heure-fin').value;
+                if (hDeb && hFin && hFin > hDeb) {
+                    const [h1, m1] = hDeb.split(':').map(Number);
+                    const [h2, m2] = hFin.split(':').map(Number);
+                    const heures = (h2 + m2/60) - (h1 + m1/60);
+                    const prixHeure = prixJour / 24;
+                    total = Math.round(prixHeure * heures);
+                    document.getElementById('duree-affichee').innerText = heures.toFixed(1) + " heure(s)";
+                } else {
+                    document.getElementById('duree-affichee').innerText = "0 heure";
+                }
             }
 
-            const diffTime = Math.abs(dateFin - dateDebut);
-            const jours = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            const total = prixJour * jours;
             const avance = total * 0.20;
-            const reste = total - avance;
-
-            document.getElementById('duree-jours').innerText = jours + " jour(s)";
             document.getElementById('total-price').innerText = total.toLocaleString() + " Ar";
             document.getElementById('avance-price').innerText = avance.toLocaleString() + " Ar";
-            document.getElementById('reste-price').innerText = reste.toLocaleString() + " Ar";
-
-            return jours;
+            document.getElementById('reste-price').innerText = (total - avance).toLocaleString() + " Ar";
         }
 
         async function handleBooking(e) {
             e.preventDefault();
-            const carId = document.getElementById('modal-car-id').value;
-            const dateDebut = document.getElementById('date-debut').value;
-            const dateFin = document.getElementById('date-fin').value;
-
-            if (new Date(dateFin) <= new Date(dateDebut)) {
-                alert("La date de fin doit être strictement supérieure à la date de début.");
-                return;
-            }
-
-            // Vérification de conflit avec les réservations validées existantes
-            const conflict = allReservations.find(r => {
-                if (r.id_devoiture !== carId || r.statut !== "validee") return false;
-                // Chevauchement : (Début_existant <= Fin_demandée) ET (Fin_existante >= Début_demandé)
-                return (r.date_debut <= dateFin && r.date_fin >= dateDebut);
-            });
-
-            if (conflict) {
-                alert(`Désolé ! Ce véhicule est déjà réservé du ${conflict.date_debut} au ${conflict.date_fin}. Veuillez choisir une autre période.`);
-                return;
-            }
-
-            showSpinner("Enregistrement de votre réservation...");
+            
+            // Lancement immédiat du Spinner au clic / lancement
+            showSpinner("Lancement et envoi de la réservation...");
             const submitBtn = document.getElementById('submit-btn');
             submitBtn.disabled = true;
 
+            const carId = document.getElementById('modal-car-id').value;
+            const typeDuree = document.getElementById('type-duree').value;
+            
+            let dateDeb, dateFin, hDeb = "", hFin = "";
+
+            if (typeDuree === 'jour') {
+                dateDeb = document.getElementById('date-debut').value;
+                dateFin = document.getElementById('date-fin').value;
+                if (new Date(dateFin) <= new Date(dateDeb)) {
+                    hideSpinner();
+                    submitBtn.disabled = false;
+                    return alert("Date de fin invalide.");
+                }
+            } else {
+                dateDeb = document.getElementById('heure-date').value;
+                dateFin = dateDeb;
+                hDeb = document.getElementById('heure-debut').value;
+                hFin = document.getElementById('heure-fin').value;
+                if (hFin <= hDeb) {
+                    hideSpinner();
+                    submitBtn.disabled = false;
+                    return alert("Heures de réservation invalides.");
+                }
+            }
+
             try {
-                const resGet = await fetch(API_RESERVATION_URL, {
-                    headers: { "Authorization": `token ${GITHUB_PAT}` }
-                });
-                
-                if (!resGet.ok) throw new Error("Impossible d'accéder au fichier des réservations.");
-                
+                const resGet = await fetch(API_RESERVATION_URL, { headers: { "Authorization": `token ${GITHUB_PAT}` } });
                 const fileData = await resGet.json();
                 const content = JSON.parse(decodeUTF8(fileData.content));
 
-                const jours = calculatePrice();
                 const prixJour = parseFloat(document.getElementById('modal-car-price').value);
-                const total = prixJour * jours;
-                const avance = total * 0.20;
+                let total = 0, nbDuree = 0;
+
+                if (typeDuree === 'jour') {
+                    nbDuree = Math.ceil(Math.abs(new Date(dateFin) - new Date(dateDeb)) / (1000 * 60 * 60 * 24));
+                    total = prixJour * nbDuree;
+                } else {
+                    const [h1, m1] = hDeb.split(':').map(Number);
+                    const [h2, m2] = hFin.split(':').map(Number);
+                    nbDuree = (h2 + m2/60) - (h1 + m1/60);
+                    total = Math.round((prixJour / 24) * nbDuree);
+                }
 
                 const newReservation = {
                     id: Date.now().toString(),
                     id_devoiture: carId,
-                    date_debut: dateDebut,
+                    type_duree: typeDuree,
+                    date_debut: dateDeb,
                     date_fin: dateFin,
-                    "nombrede jour alloue": jours,
-                    "avance20%": avance,
-                    montanttotalPaye: 0,
-                    "montant resta impaye": total - avance,
+                    heure_debut: hDeb,
+                    heure_fin: hFin,
+                    "nombrede jour alloue": nbDuree,
+                    "avance20%": total * 0.20,
+                    "montant resta impaye": total * 0.80,
                     nomlocation: document.getElementById('nomlocation').value,
                     tel: document.getElementById('tel').value,
                     CIN: document.getElementById('cin').value,
@@ -421,33 +421,40 @@
                 };
 
                 content.push(newReservation);
-
                 const updatedContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
 
                 await fetch(API_RESERVATION_URL, {
                     method: "PUT",
-                    headers: {
-                        "Authorization": `token ${GITHUB_PAT}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Authorization": `token ${GITHUB_PAT}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        message: `Demande de réservation par ${newReservation.nomlocation}`,
+                        message: `Réservation (${typeDuree}) par ${newReservation.nomlocation}`,
                         content: updatedContentBase64,
                         sha: fileData.sha
                     })
                 });
 
-                alert("Votre demande a été transmise avec succès ! Elle sera traitée sous peu par notre équipe.");
+                hideSpinner();
+                alert("Votre demande de réservation a été envoyée avec succès !");
                 closeModal();
                 initData();
             } catch (err) {
-                console.error(err);
-                alert("Erreur : " + err.message);
-            } finally {
                 hideSpinner();
+                alert("Erreur lors de l'envoi : " + err.message);
+            } finally {
                 submitBtn.disabled = false;
             }
         }
+
+        function openGalleryModal(carId) {
+            const car = allCars.find(c => c.id === carId);
+            if (!car) return;
+            document.getElementById('gallery-car-title').innerText = "Photos : " + car.nom;
+            const photosList = Array.isArray(car.photos) ? car.photos : (car.photo ? [car.photo] : []);
+            document.getElementById('gallery-images-container').innerHTML = photosList.map(url => `<div class="border rounded-xl overflow-hidden"><img src="${url}" class="h-36 w-full object-cover"></div>`).join('');
+            document.getElementById('gallery-modal').classList.remove('hidden');
+        }
+
+        function closeGalleryModal() { document.getElementById('gallery-modal').classList.add('hidden'); }
 
         initData();
     </script>
