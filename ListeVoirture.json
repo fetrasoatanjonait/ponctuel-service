@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "1792057679354",
+    "nom": "tanjona",
+    "matricule": "VF",
+    "type": "fdgg",
+    "prix": 150000,
+    "prix_long": 250000,
+    "description": "Puis , apres l'echange avec le PO  pour les remarques et pour pouvoir les résoudre  PR #12811donc j'ai traivaillé la desus et  on a casiment fini la mise en place de warning sur le champ, où les utilisateur saisie le ",
+    "photos": [
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057667197_0_images__2_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057669026_1_images__3_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057671023_2_images__4_.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792057672881_3_S0_les_voitures_neuves_deviennent_encore_plus_cheres_et_ce_n_est_pas_une_surprise_204388.jpg"
+    ],
+    "etat": "disponible"
+  }
+]
