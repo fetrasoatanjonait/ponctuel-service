@@ -42,5 +42,21 @@
       "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792186483657_1_inbound5726634174696094166.jpg"
     ],
     "etat": "disponible"
+  },
+  {
+    "id": "1792786919914",
+    "nom": "CRAFTER ",
+    "matricule": "C004",
+    "type": "BUS",
+    "prix": 200000,
+    "prix_long": 250000,
+    "description": " 22 places\n✅ Véhicule neuf, confortable et spacieux\n👨‍👩‍👧‍👦 Idéal pour les familles, les groupes et les excursions\n🛣️ Adapté aux courts trajets comme aux longs voyages\nVoyagez en toute sérénité, où que vous alliez !",
+    "photos": [
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792786830823_0_inbound1034482871318369754.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792786866219_1_inbound4445314341801599587.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792786884482_2_inbound2705884116424590823.jpg",
+      "https://raw.githubusercontent.com/fetrasoatanjonait/ponctuel-service/main/images/1792786904014_3_inbound645453472633508064.jpg"
+    ],
+    "etat": "disponible"
   }
 ]
